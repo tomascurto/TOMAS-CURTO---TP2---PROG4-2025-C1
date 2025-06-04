@@ -1,3 +1,4 @@
+// backend/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { INestApplication } from '@nestjs/common';
@@ -5,7 +6,12 @@ import express, { Request, Response } from 'express';
 import { AppModule } from './app.module';
 
 const server = express();
-let nestApp: INestApplication;  // ✅ Tipo explícito
+
+// ✅ CORRECTO: definimos ruta específica usando `get`
+server.get('/favicon.ico', (_req, res) => {
+  res.status(204).end();
+});
+let nestApp: INestApplication;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
@@ -15,9 +21,10 @@ async function bootstrap() {
 }
 bootstrap();
 
+// ✅ Vercel Serverless handler
 export default async function handler(req: Request, res: Response) {
   if (!nestApp) {
     await bootstrap();
   }
-  server(req, res);
+  server(req, res); // Aquí ejecutamos Express
 }
