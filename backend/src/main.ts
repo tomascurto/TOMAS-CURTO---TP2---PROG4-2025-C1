@@ -18,6 +18,13 @@ async function bootstrap() {
   app.enableCors();
   await app.init();
   nestApp = app;
+  app.enableCors({
+  origin: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization,X-Requested-With,Accept-Language",
+  optionsSuccessStatus: 204,
+  credentials: true,
+});
 }
 bootstrap();
 
