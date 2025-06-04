@@ -1,19 +1,23 @@
-// backend/src/main.ts
-import { Handler } from 'express';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+import { INestApplication } from '@nestjs/common';
+import express, { Request, Response } from 'express';
 import { AppModule } from './app.module';
 
 const server = express();
+let nestApp: INestApplication;  // ✅ Tipo explícito
 
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+  app.enableCors();
+  await app.init();
+  nestApp = app;
+}
+bootstrap();
 
-export const handler: Handler = async (req, res) => {
-  if (!server.locals.nestApp) {
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-    app.enableCors();
-    await app.init();
-    server.locals.nestApp = app;
+export default async function handler(req: Request, res: Response) {
+  if (!nestApp) {
+    await bootstrap();
   }
   server(req, res);
-};
+}
