@@ -14,9 +14,6 @@ interface RequestWithUser extends Request {
 export class AuthController {
     constructor(private authService: AuthService) {}
 
-
-    @UseGuards(AuthGuard('jwt'))
-
     @Post('autorizar')
     autorizar(@Req() req: RequestWithUser) {
         return {
