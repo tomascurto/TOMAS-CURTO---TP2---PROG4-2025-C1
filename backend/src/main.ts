@@ -7,7 +7,6 @@ import { AppModule } from './app.module';
 
 const server = express();
 
-// ✅ CORRECTO: definimos ruta específica usando `get`
 server.get('/favicon.ico', (_req, res) => {
   res.status(204).end();
 });
@@ -28,10 +27,9 @@ async function bootstrap() {
 }
 bootstrap();
 
-// ✅ Vercel Serverless handler
 export default async function handler(req: Request, res: Response) {
   if (!nestApp) {
     await bootstrap();
   }
-  server(req, res); // Aquí ejecutamos Express
+  server(req, res); 
 }
