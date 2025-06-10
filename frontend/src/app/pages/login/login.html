@@ -1,1 +1,11 @@
-<p>login works!</p>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <label for="usernameOrEmail">Usuario o Correo</label>
+  <input id="usernameOrEmail" formControlName="usernameOrEmail" autocomplete="username" />
+
+  <label for="password">Contraseña</label>
+  <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+
+  <button type="submit">Ingresar</button>
+
+  <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+</form>

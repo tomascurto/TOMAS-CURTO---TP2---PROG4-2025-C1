@@ -7,6 +7,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
   }));
+  app.enableCors({
+    origin: 'https://tomas-curto-tp-2-prog-4-2025-c1-5mf.vercel.app/',
+    credentials: true,
+  });
+  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
