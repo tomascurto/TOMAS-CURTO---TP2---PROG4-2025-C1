@@ -16,7 +16,7 @@ import { FormGroup} from '@angular/forms';
   ],
   templateUrl: './registro.html'
 })
-export class registro {
+export class Registro {
   registerForm: FormGroup;
   selectedFile?: File;
   errorMsg: string = '';
