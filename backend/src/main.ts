@@ -8,7 +8,7 @@ async function bootstrap() {
     transform: true,
   }));
   app.enableCors({
-    origin: 'https://tomas-curto-tp-2-prog-4-2025-c1-5mf.vercel.app/',
+    origin: 'https://tomas-curto-tp-2-prog-4-2025-c1-5mf.vercel.app',
     credentials: true,
   });
   
