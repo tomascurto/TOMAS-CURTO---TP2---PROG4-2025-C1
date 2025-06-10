@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
     RouterModule
   ],
   templateUrl: './login.html',
+  styleUrls: ['./login.css']
 })
 export class Login {
   loginForm: FormGroup;
@@ -39,7 +40,8 @@ export class Login {
         this.router.navigate(['/publicaciones']);
       },
       error: (err) => {
-        this.errorMsg = err.error.message || 'Error de login';
+        console.error('Error en login:', err); 
+    this.errorMsg = err.error?.message || 'Error de login';
       }
     });
   }

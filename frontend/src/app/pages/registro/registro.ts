@@ -8,13 +8,13 @@ import { FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-registro',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './registro.html'
+  templateUrl: './registro.html',
+  styleUrls: ['./registro.css']
 })
 export class Registro {
   registerForm: FormGroup;
@@ -26,6 +26,7 @@ export class Registro {
     private authService: AuthService,
     private router: Router
   ) {
+    console.log('Login component loaded');
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],

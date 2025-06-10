@@ -1,29 +1,32 @@
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-  <label for="firstName">Nombre</label>
-  <input id="firstName" formControlName="firstName" autocomplete="given-name" />
+<div class="form-container">
+  <form class="card-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
 
-  <label for="lastName">Apellido</label>
-  <input id="lastName" formControlName="lastName" autocomplete="family-name" />
+    <label for="firstName">Nombre</label>
+    <input id="firstName" formControlName="firstName" autocomplete="given-name" />
 
-  <label for="email">Correo</label>
-  <input id="email" type="email" formControlName="email" autocomplete="email" />
+    <label for="lastName">Apellido</label>
+    <input id="lastName" formControlName="lastName" autocomplete="family-name" />
 
-  <label for="username">Usuario</label>
-  <input id="username" formControlName="username" autocomplete="username" />
+    <label for="email">Correo</label>
+    <input id="email" type="email" formControlName="email" autocomplete="email" />
 
-  <label for="password">Contraseña</label>
-  <input id="password" type="password" formControlName="password" autocomplete="new-password" />
+    <label for="username">Usuario</label>
+    <input id="username" formControlName="username" autocomplete="username" />
 
-  <label for="birthDate">Fecha de nacimiento</label>
-  <input id="birthDate" type="date" formControlName="birthDate" />
+    <label for="password">Contraseña</label>
+    <input id="password" type="password" formControlName="password" autocomplete="new-password" />
 
-  <label for="bio">Descripción</label>
-  <textarea id="bio" formControlName="bio"></textarea>
+    <label for="birthDate">Fecha de nacimiento</label>
+    <input id="birthDate" type="date" formControlName="birthDate" />
 
-  <label for="profileImage">Imagen de perfil</label>
-  <input id="profileImage" type="file" (change)="onFileChange($event)" accept="image/*" />
+    <label for="bio">Descripción</label>
+    <textarea id="bio" formControlName="bio"></textarea>
 
-  <button type="submit">Registrarse</button>
+    <label for="profileImage">Imagen de perfil</label>
+    <input id="profileImage" type="file" (change)="onFileChange($event)" accept="image/*" />
 
-  <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
-</form>
+    <button type="submit">Registrarse</button>
+
+    <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+  </form>
+</div>
