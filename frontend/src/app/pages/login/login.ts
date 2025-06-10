@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
   ],
   templateUrl: './login.html',
 })
-export class LoginComponent {
+export class Login {
   loginForm: FormGroup;
   errorMsg: string = '';
 
