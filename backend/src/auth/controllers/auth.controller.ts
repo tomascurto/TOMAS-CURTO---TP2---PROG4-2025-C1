@@ -1,10 +1,13 @@
-import { Controller, Post, Body, BadRequestException, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Req, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginDto } from '../dto/login.dto';
 import { RegistroUserDto } from '../dto/registro.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserPayload } from '../interfaces/user-payload.interface';
 import { Request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 interface RequestWithUser extends Request {
   user: UserPayload;
@@ -44,8 +47,35 @@ export class AuthController {
     }
 
     @Post('registro')
-    async register(@Body() createUserDto: RegistroUserDto) {
-        return this.authService.registro(createUserDto);
+    @UseInterceptors(
+    FileInterceptor('profileImage', {
+      storage: diskStorage({
+        destination: './uploads/profile-images',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(new Error('Solo se permiten archivos de imagen'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  async registro(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() registroUserDto: RegistroUserDto,
+  ) {
+    if (file) {
+      registroUserDto.profileImageUrl = `/uploads/profile-images/${file.filename}`;
     }
+    return this.authService.registro(registroUserDto);
+  }
 
 }
