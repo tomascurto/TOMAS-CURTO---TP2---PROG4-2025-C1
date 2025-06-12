@@ -6,8 +6,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserPayload } from '../interfaces/user-payload.interface';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import * as multer from 'multer';
 import { extname } from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+import { Readable } from 'stream';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
 
 interface RequestWithUser extends Request {
   user: UserPayload;
@@ -47,19 +55,10 @@ export class AuthController {
     }
 
     @Post('registro')
-    @UseInterceptors(
+     @UseInterceptors(
     FileInterceptor('profileImage', {
-      storage: diskStorage({
-        destination: './uploads/profile-images',
-        filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `${uniqueSuffix}${ext}`);
-        },
-      }),
-      limits: {
-        fileSize: 5 * 1024 * 1024,
-      },
+      storage: multer.memoryStorage(), 
+      limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.startsWith('image/')) {
           return cb(new Error('Solo se permiten archivos de imagen'), false);
@@ -73,9 +72,28 @@ export class AuthController {
     @Body() registroUserDto: RegistroUserDto,
   ) {
     if (file) {
-      registroUserDto.profileImageUrl = `/uploads/profile-images/${file.filename}`;
+      const imageUrl = await this.uploadToCloudinary(file);
+      registroUserDto.profileImageUrl = imageUrl;
     }
+
     return this.authService.registro(registroUserDto);
+  }
+
+  private uploadToCloudinary(file: Express.Multer.File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'profile-images',
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error || !result) return reject(new Error('Error al subir la imagen a Cloudinary'));
+          resolve(result.secure_url);
+        },
+      );
+
+      Readable.from(file.buffer).pipe(stream);
+    });
   }
 
 }
