@@ -95,5 +95,6 @@ export class AuthController {
       Readable.from(file.buffer).pipe(stream);
     });
   }
-
+ 
 }
+ 
