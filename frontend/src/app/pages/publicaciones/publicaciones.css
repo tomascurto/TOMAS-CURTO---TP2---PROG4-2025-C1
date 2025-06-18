@@ -1,0 +1,69 @@
+.publicaciones-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.publicacion {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #fff;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.publicacion-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.publicacion-autor {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85em;
+  color: #555;
+}
+
+.publicacion-fecha {
+  font-size: 0.75em;
+  color: #888;
+  margin-top: 2px;
+}
+
+.publicacion-titulo {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 6px 0 4px;
+  color: #222;
+}
+
+.publicacion-contenido {
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.publicacion-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.like-btn.liked {
+  color: red;
+}
