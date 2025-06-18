@@ -1,1 +1,13 @@
-<p>publicaciones works!</p>
+<h2>Publicaciones</h2>
+<label for="orden">Ordenar por:</label>
+<select id="orden" [(ngModel)]="orden">
+<option value="fecha">Fecha</option>
+<option value="likes">Likes</option>
+</select>
+
+<div *ngFor="let pub of publicaciones">
+    <app-publicacion [publicacion]="pub"></app-publicacion>
+</div>
+
+<button (click)="paginaAnterior()" [disabled]="offset === 0">Anterior</button>
+<button (click)="paginaSiguiente()">Siguiente</button>
