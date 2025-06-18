@@ -84,4 +84,5 @@ export class PublicacionesController {
     const publicacion = await this.publicacionesService.quitarLike(id, usuarioId);
     return { message: 'Like removido', publicacion };
   }
+  
 }
