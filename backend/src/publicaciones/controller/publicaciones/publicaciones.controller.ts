@@ -11,8 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PublicacionesService } from 'src/publicaciones/service/publicaciones/publicaciones.service';
-import { CrearPublicacionDto } from 'src/publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
+import { PublicacionesService } from '../../../publicaciones/service/publicaciones/publicaciones.service';
+import { CrearPublicacionDto } from '../../../publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
 
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 
