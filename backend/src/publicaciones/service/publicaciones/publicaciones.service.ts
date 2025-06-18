@@ -85,7 +85,7 @@ export class PublicacionesService {
       { $limit: limit },
       {
         $lookup: {
-          from: 'usuarios',
+          from: 'users',
           localField: 'autor',
           foreignField: '_id',
           as: 'autor'
