@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { ConflictException } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { Types } from 'mongoose'; 
 
 const usuarioId = new Types.ObjectId("64b5f60d1e3c2c456789abcd");
 
