@@ -71,7 +71,7 @@ export class PublicacionesController {
     return publicaciones;
   }
 
-  @Post(':id/like')
+  @Post(':id/like') 
   async like(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user?.id || usuarioIdPrueba;
     const publicacion = await this.publicacionesService.darLike(id, usuarioId);
