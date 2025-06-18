@@ -57,25 +57,60 @@ export class PublicacionesService {
     }
 
     async listarPublicaciones(
-    orden: 'fecha' | 'likes',
-    usuarioId?: string,
-    offset = 0,
-    limit = 10,
-    ) {
-    const filtro: any = { activo: true };
-    if (usuarioId) filtro.autor = usuarioId;
+  orden: 'fecha' | 'likes',
+  usuarioId?: string,
+  offset = 0,
+  limit = 10,
+) {
+  const filtro: any = { activo: true };
+  if (usuarioId) filtro.autor = usuarioId;
 
-    let sort = {};
-    if (orden === 'fecha') sort = { createdAt: -1 };
-    if (orden === 'likes') sort = { likes: -1 };
+  if (orden === 'likes') {
+    const pipeline: any[] = [];
 
-    return this.publicacionModel
-        .find(filtro)
-        .sort(sort)
-        .skip(offset)
-        .limit(limit)
-        .exec();
+    if (usuarioId) {
+      pipeline.push({ $match: filtro });
+    } else {
+      pipeline.push({ $match: { activo: true } });
     }
+
+    pipeline.push(
+      {
+        $addFields: {
+          likesCount: { $size: '$likes' }
+        }
+      },
+      { $sort: { likesCount: -1 } },
+      { $skip: offset },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: 'autor',
+          foreignField: '_id',
+          as: 'autor'
+        }
+      },
+      {
+        $unwind: {
+          path: '$autor',
+          preserveNullAndEmptyArrays: true
+        }
+      }
+    );
+
+    return this.publicacionModel.aggregate(pipeline);
+  }
+
+  
+  return this.publicacionModel
+    .find(filtro)
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit)
+    .populate('autor') 
+    .exec();
+}
 
     async darLike(publicacionId: string, usuarioId: string) {
     const publicacion = await this.publicacionModel.findById(publicacionId);

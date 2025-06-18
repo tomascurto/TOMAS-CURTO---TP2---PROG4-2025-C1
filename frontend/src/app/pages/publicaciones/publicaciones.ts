@@ -3,42 +3,39 @@ import { PublicacionesService } from '../../services/publicaciones.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Publicacion } from '../../componentes/publicacion/publicacion';
+
 @Component({
   selector: 'app-publicaciones',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, Publicacion],
   templateUrl: './publicaciones.html',
-  styleUrls: ['./publicaciones.css']
+  styleUrls: ['./publicaciones.css'],
+  standalone: true
 })
 export class Publicaciones {
   publicaciones: any[] = [];
   orden: 'fecha' | 'likes' = 'fecha';
   offset = 0;
   limit = 5;
+  usuarioId = 'usuario-demo';
 
   constructor(private publicacionesService: PublicacionesService) {
     this.cargarPublicaciones();
   }
 
   cargarPublicaciones() {
-  this.publicacionesService.listar('fecha', 0, 10).subscribe((data) => {
-    this.publicaciones = data.map((pub: any) => ({
-      ...pub,
-      yaLeGusta: pub.likes.includes(this.usuarioId),
-    }));
-  });
-}
-usuarioId = 'usuario-demo'; 
-  toggleLike(pub: any) {
-    const yaLeGusta = pub.likes?.includes(this.usuarioId);
+    this.publicacionesService.listar(this.orden, this.offset, this.limit).subscribe((data) => {
+      this.publicaciones = data.map((pub: any) => ({
+        ...pub,
+        yaLeGusta: pub.likes.includes(this.usuarioId),
+      }));
+    });
+  }
 
-    if (yaLeGusta) {
-      this.publicacionesService.unlike(pub._id).subscribe(() => {
-        pub.likes = pub.likes.filter((id: string) => id !== this.usuarioId);
-      });
-    } else {
-      this.publicacionesService.like(pub._id).subscribe(() => {
-        pub.likes.push(this.usuarioId);
-      });
+  onLikeChanged(updatedPub: any) {
+    const index = this.publicaciones.findIndex(p => p._id === updatedPub._id);
+    if (index !== -1) {
+      this.publicaciones[index] = updatedPub;
     }
   }
 
@@ -53,4 +50,6 @@ usuarioId = 'usuario-demo';
     this.offset += this.limit;
     this.cargarPublicaciones();
   }
+
+  
 }

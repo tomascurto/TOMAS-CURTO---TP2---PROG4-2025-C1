@@ -1,26 +1,23 @@
 <div class="publicaciones-container">
-  <div class="publicacion" *ngFor="let pub of publicaciones">
-    
-    <div class="publicacion-header">
-      <div class="publicacion-autor">
-        <strong>{{ pub.autor?.nombre || 'Anónimo' }}</strong>
-        <div class="publicacion-fecha">{{ pub.createdAt | date: 'short' }}</div>
-      </div>
-    </div>
 
-    <div class="publicacion-titulo">{{ pub.titulo }}</div>
-
-    <div class="publicacion-contenido">{{ pub.contenido }}</div>
-
-    <img *ngIf="pub.imagenUrl" [src]="pub.imagenUrl" alt="Imagen de publicación" class="publicacion-img" />
-
-    <button
-      class="like-btn"
-      [class.liked]="pub.likes?.includes(usuarioId)"
-      (click)="toggleLike(pub)"
-    >
-      ❤️ {{ pub.likes?.length || 0 }}
-    </button>
-
+  <div class="orden-selector">
+    <label for="orden">Ordenar por:</label>
+    <select id="orden" [(ngModel)]="orden" (change)="cargarPublicaciones()">
+      <option value="fecha">Fecha</option>
+      <option value="likes">Me gusta</option>
+    </select>
   </div>
+
+  <app-publicacion
+    *ngFor="let pub of publicaciones"
+    [publicacion]="pub"
+    [usuarioId]="usuarioId"
+    (likeChanged)="onLikeChanged($event)"
+  ></app-publicacion>
+
+  <div class="paginacion">
+    <button (click)="paginaAnterior()">Anterior</button>
+    <button (click)="paginaSiguiente()">Siguiente</button>
+  </div>
+  
 </div>

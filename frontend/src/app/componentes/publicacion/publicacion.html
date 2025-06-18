@@ -1,1 +1,21 @@
-<p>publicacion works!</p>
+<div class="publicacion">
+  <div class="publicacion-header">
+    <div class="publicacion-autor">
+      <strong>{{ publicacion.autor?.nombre || 'Anónimo' }}</strong>
+      <div class="publicacion-fecha">{{ publicacion.createdAt | date: 'short' }}</div>
+    </div>
+  </div>
+
+  <div class="publicacion-titulo">{{ publicacion.titulo }}</div>
+  <div class="publicacion-contenido">{{ publicacion.contenido }}</div>
+
+  <img *ngIf="publicacion.imagenUrl" [src]="publicacion.imagenUrl" alt="Imagen de publicación" class="publicacion-img" />
+
+  <button
+    class="like-btn"
+    [class.liked]="publicacion.likes?.includes(usuarioId)"
+    (click)="toggleLike()"
+  >
+    ❤️ {{ publicacion.likes?.length || 0 }}
+  </button>
+</div>

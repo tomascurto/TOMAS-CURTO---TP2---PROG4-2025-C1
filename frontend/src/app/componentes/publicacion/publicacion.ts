@@ -1,36 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PublicacionesService } from '../../services/publicaciones.service';
-import { Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-publicacion',
-  template: `
-    <div class="publicacion">
-      <img *ngIf="publicacion.imagenUrl" [src]="publicacion.imagenUrl" alt="Imagen">
-      <p>{{ publicacion.contenido }}</p>
-      <button (click)="toggleLike()">
-        {{ dioLike ? 'Quitar Like' : 'Dar Like' }} ({{ publicacion.likes.length }})
-      </button>
-    </div>
-  `
+  templateUrl: './publicacion.html',
+  styleUrls: ['./publicacion.css'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class Publicacion {
   @Input() publicacion!: any;
-  dioLike = false;
+  @Input() usuarioId!: string;
+  @Output() likeChanged = new EventEmitter<any>();
 
   constructor(private publicacionesService: PublicacionesService) {}
 
   toggleLike() {
-    const id = this.publicacion._id;
-    if (this.dioLike) {
-      this.publicacionesService.unlike(id).subscribe(() => {
-        this.dioLike = false;
-        this.publicacion.likes.pop();
+    const leGusta = this.publicacion.likes.includes(this.usuarioId);
+
+    if (leGusta) {
+      this.publicacionesService.unlike(this.publicacion._id).subscribe(() => {
+        this.publicacion.likes = this.publicacion.likes.filter((id: string) => id !== this.usuarioId);
+        this.likeChanged.emit(this.publicacion);
       });
     } else {
-      this.publicacionesService.like(id).subscribe(() => {
-        this.dioLike = true;
-        this.publicacion.likes.push('usuario-demo');
+      this.publicacionesService.like(this.publicacion._id).subscribe(() => {
+        this.publicacion.likes.push(this.usuarioId);
+        this.likeChanged.emit(this.publicacion);
       });
     }
   }
