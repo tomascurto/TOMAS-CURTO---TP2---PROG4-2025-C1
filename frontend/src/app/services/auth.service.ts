@@ -16,4 +16,19 @@ export class AuthService {
   register(data: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}/registro`, data);
   }
+
+  logout() {
+    localStorage.removeItem('token');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+
+
 }

@@ -11,6 +11,7 @@ import { extname } from 'path';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { Readable } from 'stream';
+import { JwtAuthGuard } from '../jwt-auth.guard';
 
 interface RequestWithUser extends Request {
   user: UserPayload;
@@ -75,6 +76,15 @@ export class AuthController {
     }
 
     return this.authService.registro(registroUserDto);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  logout(@Req() req: RequestWithUser) {
+    return {
+      message: 'Logout exitoso (token aún válido, solo se debe eliminar del cliente)',
+      user: req.user,
+    };
   }
  
 }

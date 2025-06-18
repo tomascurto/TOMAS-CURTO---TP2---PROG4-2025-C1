@@ -9,10 +9,13 @@ import {
   Delete,
   Param,
   Query,
+  UseGuards
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from '../../../publicaciones/service/publicaciones/publicaciones.service';
 import { CrearPublicacionDto } from '../../../publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
+
+import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 
@@ -20,15 +23,14 @@ interface RequestConUsuario extends Request {
   user?: { id: string };
 }
 
-const usuarioIdPrueba = '64b5f60d1e3c2c456789abcd';
-
+@UseGuards(JwtAuthGuard)
 @Controller('publicaciones')
 export class PublicacionesController {
   constructor(
     private readonly publicacionesService: PublicacionesService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-
+  
   @Post('subir-imagen')
   @UseInterceptors(FileInterceptor('imagen'))
   async subirImagen(@UploadedFile() file: Express.Multer.File) {
@@ -43,14 +45,14 @@ export class PublicacionesController {
     @Body() dto: CrearPublicacionDto,
     @Req() req: RequestConUsuario,
   ) {
-    const usuarioId = req.user?.id || usuarioIdPrueba;
+    const usuarioId = req.user!.id;
     const publicacion = await this.publicacionesService.crearPublicacion(dto, usuarioId, file);
     return { message: 'Publicación creada', publicacion };
   }
 
   @Delete(':id')
   async bajaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user?.id || usuarioIdPrueba;
+    const usuarioId = req.user!.id;
     await this.publicacionesService.bajaLogica(id, usuarioId);
     return { message: 'Publicación dada de baja lógicamente' };
   }
@@ -73,14 +75,14 @@ export class PublicacionesController {
 
   @Post(':id/like') 
   async like(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user?.id || usuarioIdPrueba;
+    const usuarioId = req.user!.id;
     const publicacion = await this.publicacionesService.darLike(id, usuarioId);
     return { message: 'Like agregado', publicacion };
   }
 
   @Delete(':id/like')
   async unlike(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user?.id || usuarioIdPrueba;
+    const usuarioId = req.user!.id;
     const publicacion = await this.publicacionesService.quitarLike(id, usuarioId);
     return { message: 'Like removido', publicacion };
   }
