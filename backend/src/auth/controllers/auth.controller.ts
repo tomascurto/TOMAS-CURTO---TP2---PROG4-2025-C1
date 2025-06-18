@@ -9,13 +9,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { extname } from 'path';
 import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Readable } from 'stream';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME!,
-  api_key: process.env.CLOUDINARY_API_KEY!,
-  api_secret: process.env.CLOUDINARY_API_SECRET!,
-});
 
 interface RequestWithUser extends Request {
   user: UserPayload;
@@ -23,7 +18,10 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(
+      private authService: AuthService,
+      private cloudinaryService: CloudinaryService,
+    ) {}
 
     @Post('autorizar')
     autorizar(@Req() req: RequestWithUser) {
@@ -72,28 +70,11 @@ export class AuthController {
     @Body() registroUserDto: RegistroUserDto,
   ) {
     if (file) {
-      const imageUrl = await this.uploadToCloudinary(file);
+      const imageUrl = await this.cloudinaryService.uploadImage(file, 'profile-images');
       registroUserDto.profileImageUrl = imageUrl;
     }
 
     return this.authService.registro(registroUserDto);
-  }
-
-  private uploadToCloudinary(file: Express.Multer.File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'profile-images',
-          resource_type: 'image',
-        },
-        (error, result) => {
-          if (error || !result) return reject(new Error('Error al subir la imagen a Cloudinary'));
-          resolve(result.secure_url);
-        },
-      );
-
-      Readable.from(file.buffer).pipe(stream);
-    });
   }
  
 }
