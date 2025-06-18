@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 import { CrearPublicacionDto } from 'src/publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
 import { Publicacion } from 'src/publicaciones/schemas/publicacion.schema/publicacion.schema';
 import { InjectModel } from '@nestjs/mongoose';

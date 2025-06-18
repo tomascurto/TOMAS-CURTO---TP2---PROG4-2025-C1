@@ -14,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from 'src/publicaciones/service/publicaciones/publicaciones.service';
 import { CrearPublicacionDto } from 'src/publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
 
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 
 interface RequestConUsuario extends Request {
   user?: { id: string };

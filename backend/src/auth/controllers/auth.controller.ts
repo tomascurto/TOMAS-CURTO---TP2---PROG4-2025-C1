@@ -9,7 +9,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { extname } from 'path';
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { Readable } from 'stream';
 
 interface RequestWithUser extends Request {
