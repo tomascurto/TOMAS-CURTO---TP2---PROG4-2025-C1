@@ -1,7 +1,7 @@
 <div class="publicacion">
   <div class="publicacion-header">
     <div class="publicacion-autor">
-      <strong>{{ publicacion.autor?.nombre || 'Anónimo' }}</strong>
+      <strong>{{ publicacion.autor?.firstName+' '+publicacion.autor?.lastName || 'Anónimo' }}</strong>
       <div class="publicacion-fecha">{{ publicacion.createdAt | date: 'short' }}</div>
     </div>
   </div>

@@ -32,6 +32,16 @@ export class UsersService {
             { $match: { autor: new Types.ObjectId(userId), activo: true } },
             { $sort: { createdAt: -1 } },
             { $limit: 3 },
+            
+            
+            {
+                $lookup: {
+                    from: 'users', 
+                    localField: 'autor',
+                    foreignField: '_id',
+                    as: 'autor'
+                }
+            },
             {
             $lookup: {
                 from: 'comentarios',

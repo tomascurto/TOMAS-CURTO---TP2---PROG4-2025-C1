@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PerfilService } from '../../services/perfil.service';
 import { PerfilResponse } from '../../models/perfil-response.model';
 import { Publicacion } from '../../componentes/publicacion/publicacion'; 
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-mi-perfil',
@@ -14,13 +16,16 @@ import { Publicacion } from '../../componentes/publicacion/publicacion';
 export class MiPerfil implements OnInit {
   perfil?: PerfilResponse;
   error?: string;
-  usuarioId = 'usuario-demo'; 
+  usuarioId = ''; 
 
   constructor(private perfilService: PerfilService) {}
 
   ngOnInit() {
     this.perfilService.getMiPerfil().subscribe({
-      next: data => this.perfil = data,
+      next: data => {
+      this.perfil = data;
+      this.usuarioId = data.user._id;
+    },
       error: err => this.error = err.error?.message || 'Error al cargar perfil'
     });
   }
@@ -32,4 +37,6 @@ export class MiPerfil implements OnInit {
       this.perfil.publicaciones[idx] = pub;
     }
   }
+
+  
 }
