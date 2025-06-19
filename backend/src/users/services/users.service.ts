@@ -27,74 +27,72 @@ export class UsersService {
     }
 
     async obtenerPerfilCompleto(userId: string) {
-        const user = await this.userModel.findById(userId).lean().exec();
-        const publicaciones = await this.publicacionModel.aggregate([
-            { $match: { autor: new Types.ObjectId(userId), activo: true } },
-            { $sort: { createdAt: -1 } },
-            { $limit: 3 },
-            
-            
-            {
-                $lookup: {
-                    from: 'users', 
-                    localField: 'autor',
-                    foreignField: '_id',
-                    as: 'autor'
-                }
-            },
-            {
-            $lookup: {
-                from: 'comentarios',
-                localField: '_id',
-                foreignField: 'publicacion',
-                as: 'comentarios',
-            },
-            },
-            {
-            $lookup: {
-                from: 'usuarios',
-                localField: 'comentarios.autor',
-                foreignField: '_id',
-                as: 'comentariosUsuarios',
-            },
-            },
-            {
-            $addFields: {
-                comentarios: {
-                $map: {
-                    input: '$comentarios',
-                    as: 'c',
-                    in: {
-                    _id: '$$c._id',
-                    mensaje: '$$c.mensaje',
-                    createdAt: '$$c.createdAt',
-                    autor: {
-                        _id: {
-                        $arrayElemAt: [
-                            {
-                            $filter: {
-                                input: '$comentariosUsuarios',
-                                as: 'u',
-                                cond: { $eq: ['$$u._id', '$$c.autor'] }
-                            }
-                            }, 0
-                        ]
-                        },
-                        username: true
-                    }
-                    }
-                }
-                }
-            }
-            },
-            {
-            $project: {
-                comentariosUsuarios: 0
-            }
-            }
-        ]);
+  const user = await this.userModel.findById(userId).lean().exec();
 
-        return { user, publicaciones };
+  const publicaciones = await this.publicacionModel.aggregate([
+        { $match: { autor: new Types.ObjectId(userId), activo: true } },
+        { $sort: { createdAt: -1 } },
+        { $limit: 3 },
+
+        {
+        $lookup: {
+            from: 'users',         
+            localField: 'autor',
+            foreignField: '_id',
+            as: 'autor'
+        }
+        },
+        { $unwind: { path: '$autor', preserveNullAndEmptyArrays: true } },
+
+        {
+        $lookup: {
+            from: 'comentarios',
+            localField: '_id',
+            foreignField: 'publicacion',
+            as: 'comentarios',
+        }
+        },
+        {
+        $lookup: {
+            from: 'users',
+            localField: 'comentarios.autor',
+            foreignField: '_id',
+            as: 'comentariosUsuarios',
+        }
+        },
+        {
+        $addFields: {
+            comentarios: {
+            $map: {
+                input: '$comentarios',
+                as: 'c',
+                in: {
+                _id: '$$c._id',
+                mensaje: '$$c.mensaje',
+                createdAt: '$$c.createdAt',
+                autor: {
+                    _id: {
+                    $arrayElemAt: [
+                        {
+                        $filter: {
+                            input: '$comentariosUsuarios',
+                            as: 'u',
+                            cond: { $eq: ['$$u._id', '$$c.autor'] }
+                        }
+                        }, 0
+                    ]
+                    },
+                    username: true
+                }
+                }
+            }
+            }
+        }
+        },
+        { $project: { comentariosUsuarios: 0 } }
+    ]);
+
+    return { user, publicaciones };
     }
 
 }
