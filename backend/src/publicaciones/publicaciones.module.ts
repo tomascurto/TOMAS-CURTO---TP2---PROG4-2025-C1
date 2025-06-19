@@ -16,5 +16,8 @@ import { UserSchema, User } from '../users/schemas/user.schema';
   ],
   controllers: [PublicacionesController],
   providers: [PublicacionesService],
+  exports: [
+    MongooseModule,
+  ],
 })
 export class PublicacionesModule {}

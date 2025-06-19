@@ -4,13 +4,14 @@ import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
 import { UserDocument } from '../schemas/user.schema';
 import { Types } from 'mongoose';
+import { Publicacion } from '../../publicaciones/schemas/publicacion.schema/publicacion.schema';
 
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
-        @InjectModel('Publicacion') private publicacionModel: Model<any>,
+        @InjectModel(Publicacion.name) private publicacionModel: Model<any>,
 
     ) {}
 
