@@ -9,6 +9,12 @@ ul {
   gap: 1rem;
   margin: 0;
   padding: 0;
+  align-items: center;
+}
+
+
+li.log {
+  margin-left: auto; 
 }
 
 li a {
