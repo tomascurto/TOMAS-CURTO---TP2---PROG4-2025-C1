@@ -20,7 +20,7 @@ import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 
 interface RequestConUsuario extends Request {
-  user?: { id: string };
+  user?: { userId: string };
 }
 
 @UseGuards(JwtAuthGuard)
@@ -45,14 +45,15 @@ export class PublicacionesController {
     @Body() dto: CrearPublicacionDto,
     @Req() req: RequestConUsuario,
   ) {
-    const usuarioId = req.user!.id;
+    console.log('Usuario en request:', req.user);
+    const usuarioId = req.user!.userId;
     const publicacion = await this.publicacionesService.crearPublicacion(dto, usuarioId, file);
     return { message: 'Publicación creada', publicacion };
   }
 
   @Delete(':id')
   async bajaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user!.id;
+    const usuarioId = req.user!.userId;
     await this.publicacionesService.bajaLogica(id, usuarioId);
     return { message: 'Publicación dada de baja lógicamente' };
   }
@@ -75,14 +76,14 @@ export class PublicacionesController {
 
   @Post(':id/like') 
   async like(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user!.id;
+    const usuarioId = req.user!.userId;
     const publicacion = await this.publicacionesService.darLike(id, usuarioId);
     return { message: 'Like agregado', publicacion };
   }
 
   @Delete(':id/like')
   async unlike(@Param('id') id: string, @Req() req: RequestConUsuario) {
-    const usuarioId = req.user!.id;
+    const usuarioId = req.user!.userId;
     const publicacion = await this.publicacionesService.quitarLike(id, usuarioId);
     return { message: 'Like removido', publicacion };
   }
