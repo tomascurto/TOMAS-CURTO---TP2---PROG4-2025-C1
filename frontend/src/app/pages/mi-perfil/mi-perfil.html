@@ -1,1 +1,30 @@
-<p>mi-perfil works!</p>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div *ngIf="perfil">
+  <div class="user-info">
+    <img *ngIf="perfil.user.profileImageUrl" [src]="perfil.user.profileImageUrl" alt="Avatar">
+    <h2>{{ perfil.user.firstName }} {{ perfil.user.lastName }} ({{ perfil.user.username }})</h2>
+    <p *ngIf="perfil.user.bio">{{ perfil.user.bio }}</p>
+  </div>
+
+  <div class="recent-posts">
+    <h3>Mis últimas publicaciones</h3>
+    <div *ngIf="perfil.publicaciones.length; else sinPosts">
+      <div *ngFor="let p of perfil.publicaciones" class="post-card">
+        <h4>{{ p.titulo }}</h4>
+        <p>{{ p.mensaje }}</p>
+        <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" alt="imagen">
+        <div class="comments">
+          <strong>Comentarios:</strong>
+          <div *ngIf="p.comentarios.length; else sinComentarios">
+            <div *ngFor="let c of p.comentarios">
+              <em>{{ c.autor.username }}:</em> {{ c.mensaje }}
+            </div>
+          </div>
+          <ng-template #sinComentarios><p>No hay comentarios aún.</p></ng-template>
+        </div>
+      </div>
+    </div>
+    <ng-template #sinPosts><p>No tenés publicaciones aún.</p></ng-template>
+  </div>
+</div>

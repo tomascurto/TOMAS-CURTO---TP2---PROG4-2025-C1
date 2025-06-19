@@ -7,7 +7,9 @@
   </div>
 
   <div class="publicacion-titulo">{{ publicacion.titulo }}</div>
-  <div class="publicacion-contenido">{{ publicacion.contenido }}</div>
+  
+  <div class="publicacion-mensaje">{{ publicacion.mensaje }}</div>
+
 
   <img *ngIf="publicacion.imagenUrl" [src]="publicacion.imagenUrl" alt="Imagen de publicación" class="publicacion-img" />
 
