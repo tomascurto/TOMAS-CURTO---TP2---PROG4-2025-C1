@@ -1,30 +1,33 @@
 <div *ngIf="error" class="error">{{ error }}</div>
 
 <div *ngIf="perfil">
-  <div class="user-info">
-    <img *ngIf="perfil.user.profileImageUrl" [src]="perfil.user.profileImageUrl" alt="Avatar">
-    <h2>{{ perfil.user.firstName }} {{ perfil.user.lastName }} ({{ perfil.user.username }})</h2>
-    <p *ngIf="perfil.user.bio">{{ perfil.user.bio }}</p>
-  </div>
-
-  <div class="recent-posts">
-    <h3>Mis últimas publicaciones</h3>
-    <div *ngIf="perfil.publicaciones.length; else sinPosts">
-      <div *ngFor="let p of perfil.publicaciones" class="post-card">
-        <h4>{{ p.titulo }}</h4>
-        <p>{{ p.mensaje }}</p>
-        <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" alt="imagen">
-        <div class="comments">
-          <strong>Comentarios:</strong>
-          <div *ngIf="p.comentarios.length; else sinComentarios">
-            <div *ngFor="let c of p.comentarios">
-              <em>{{ c.autor.username }}:</em> {{ c.mensaje }}
-            </div>
-          </div>
-          <ng-template #sinComentarios><p>No hay comentarios aún.</p></ng-template>
+    <div class="perfil-card">
+        <div class="perfil-avatar">
+            <img *ngIf="perfil.user.profileImageUrl; else defaultAvatar" [src]="perfil.user.profileImageUrl" alt="Foto de perfil">
+            <ng-template #defaultAvatar>
+              <div class="avatar-placeholder">👤</div>
+            </ng-template>
         </div>
-      </div>
+        <div class="perfil-detalles">
+          <h2>{{ perfil.user.firstName }} {{ perfil.user.lastName }}</h2>
+          <p class="username">{{ '@' + perfil.user.username }}</p>
+          <p *ngIf="perfil.user.bio" class="bio">{{ perfil.user.bio }}</p>
+        </div>
     </div>
-    <ng-template #sinPosts><p>No tenés publicaciones aún.</p></ng-template>
+
+    <div class="recent-posts">
+
+    <div *ngIf="perfil.publicaciones.length; else sinPosts">
+      <app-publicacion
+        *ngFor="let pub of perfil.publicaciones"
+        [publicacion]="pub"
+        [usuarioId]="usuarioId"
+        (likeChanged)="onLikeChanged($event)">
+      </app-publicacion>
+    </div>
+
+    <ng-template #sinPosts>
+      <p>No tenés publicaciones aún.</p>
+    </ng-template>
   </div>
 </div>
