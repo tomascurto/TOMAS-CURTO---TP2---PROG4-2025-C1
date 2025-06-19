@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { UsersService } from './services/users.service';
-import { PublicacionesModule } from 'src/publicaciones/publicaciones.module';
+import { PublicacionesModule } from '../publicaciones/publicaciones.module';
 
 
 @Module({
