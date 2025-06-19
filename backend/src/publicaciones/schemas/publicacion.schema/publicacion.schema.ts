@@ -12,7 +12,7 @@ export class Publicacion extends Document {
   @Prop()
   imagenUrl?: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Usuario', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   autor!: Types.ObjectId;
 
   @Prop({ default: [] })

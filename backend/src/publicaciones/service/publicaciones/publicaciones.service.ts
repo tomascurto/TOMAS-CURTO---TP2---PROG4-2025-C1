@@ -108,6 +108,7 @@ export class PublicacionesService {
     .sort({ createdAt: -1 })
     .skip(offset)
     .limit(limit)
+    .populate('autor', 'firstName lastName username profileImageUrl') 
     .exec();
 }
 
