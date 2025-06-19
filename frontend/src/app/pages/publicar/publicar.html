@@ -1,0 +1,18 @@
+<div class="container">
+    <h2>Nueva Publicación</h2>
+    <form [formGroup]="publicarForm" (ngSubmit)="onSubmit()">
+        <label for="titulo">Título:</label>
+        <input id="titulo" formControlName="titulo" placeholder="Ingrese el título" />
+
+        <label for="mensaje">Mensaje:</label>
+        <textarea id="mensaje" formControlName="mensaje" placeholder="Escriba su mensaje"></textarea>
+
+        <label for="imagen">Imagen (opcional):</label>
+        <input type="file" id="imagen" (change)="onFileChange($event)" />
+
+        <button type="submit">Publicar</button>
+
+        <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
+        <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+    </form>
+</div>

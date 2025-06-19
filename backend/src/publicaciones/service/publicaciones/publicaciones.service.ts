@@ -22,7 +22,7 @@ export class PublicacionesService {
         usuarioId: string,
         imagen?: Express.Multer.File,
     ) {
-        let imagenUrl: string | null = null;
+        let imagenUrl: string | undefined = undefined;
 
         if (imagen) {
             imagenUrl = await this.cloudinaryService.uploadImage(imagen, 'publicaciones');
