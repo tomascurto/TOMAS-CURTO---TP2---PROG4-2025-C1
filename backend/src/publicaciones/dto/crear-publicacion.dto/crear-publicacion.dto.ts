@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CrearPublicacionDto {
+  @IsNotEmpty({ message: 'El título es obligatorio' })
   @IsString()
-  @IsNotEmpty()
   titulo!: string;
 
+  @IsNotEmpty({ message: 'El mensaje es obligatorio' })
   @IsString()
-  @IsNotEmpty()
   mensaje!: string;
 }

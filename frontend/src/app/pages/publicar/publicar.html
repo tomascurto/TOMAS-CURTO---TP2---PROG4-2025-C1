@@ -1,18 +1,27 @@
 <div class="container">
     <h2>Nueva Publicación</h2>
-    <form [formGroup]="publicarForm" (ngSubmit)="onSubmit()">
-        <label for="titulo">Título:</label>
-        <input id="titulo" formControlName="titulo" placeholder="Ingrese el título" />
+    <form [formGroup]="publicarForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <div>
+            <label for="titulo">Título</label>
+            <input type="text" id="titulo" formControlName="titulo" placeholder="Escribe un título">
+            <div class="errorMessage" *ngIf="publicarForm.get('titulo')?.invalid && publicarForm.get('titulo')?.touched" >
+            El título es obligatorio.
+            </div>
+        </div>
 
-        <label for="mensaje">Mensaje:</label>
-        <textarea id="mensaje" formControlName="mensaje" placeholder="Escriba su mensaje"></textarea>
+        <div>
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" formControlName="mensaje" placeholder="Escribe un mensaje"></textarea>
+            <div class="errorMessage" *ngIf="publicarForm.get('mensaje')?.invalid && publicarForm.get('mensaje')?.touched" >
+                El mensaje es obligatorio.
+            </div>
+        </div>
 
-        <label for="imagen">Imagen (opcional):</label>
-        <input type="file" id="imagen" (change)="onFileChange($event)" />
+        <div>
+            <label for="imagen">Imagen (opcional)</label>
+            <input type="file" id="imagen" (change)="onFileChange($event)">
+        </div>
 
-        <button type="submit">Publicar</button>
-
-        <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
-        <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+        <button type="submit" [disabled]="publicarForm.invalid">Publicar</button>
     </form>
 </div>

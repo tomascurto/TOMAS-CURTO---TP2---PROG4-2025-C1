@@ -34,7 +34,10 @@ export class Publicar {
   }
 
   onSubmit() {
-    if (this.publicarForm.invalid) return;
+     if (this.publicarForm.invalid) {
+        this.publicarForm.markAllAsTouched();
+        return;
+    }
 
     const formData = new FormData();
     formData.append('titulo', this.publicarForm.get('titulo')?.value);
