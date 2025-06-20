@@ -26,3 +26,22 @@ li a.active {
   font-weight: bold;
   border-bottom: 2px solid yellow;
 }
+
+.navbar-avatar img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.nav-avatar-placeholder {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
