@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PerfilService } from '../../services/perfil.service';
 import { OnInit } from '@angular/core';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -19,17 +20,25 @@ export class Navbar  implements OnInit{
   constructor(private authService: AuthService, private router: Router, private perfilService: PerfilService) {}
   
   ngOnInit(): void {
-    if (this.isLoggedIn()) {
-      this.perfilService.getMiPerfil().subscribe({
-        next: (perfil) => {
-          this.username = perfil.user.username;
-          this.avatar = perfil.user.profileImageUrl;
-        },
-        error: () => {
+     this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        if (this.isLoggedIn()) {
+          this.perfilService.getMiPerfil().subscribe({
+            next: (perfil) => {
+              this.username = perfil.user.username;
+              this.avatar = perfil.user.profileImageUrl;
+            },
+            error: () => {
+              this.username = null;
+              this.avatar = undefined;
+            }
+          });
+        } else {
           this.username = null;
+          this.avatar = undefined;
         }
       });
-    }
   }
 
   isLoggedIn(): boolean {

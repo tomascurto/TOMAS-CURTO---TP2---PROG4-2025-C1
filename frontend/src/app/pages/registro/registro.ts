@@ -55,7 +55,24 @@ export class Registro {
     }
 
     this.authService.register(formData).subscribe({
-      next: () => this.router.navigate(['/login']),
+      next: () => {
+        const loginData = {
+          usernameOrEmail: this.registerForm.value.username, 
+          password: this.registerForm.value.password
+        };
+
+        this.authService.login(loginData).subscribe({
+          next: (res) => {
+            localStorage.setItem('token', res.token);
+            this.router.navigate(['/publicaciones']);
+          },
+          error: (err) => {
+            console.error('Error en login automático:', err);
+            this.errorMsg = 'El registro fue exitoso pero no se pudo iniciar sesión.';
+            this.router.navigate(['/login']);
+          }
+        });
+      },
       error: (err) => {
         this.errorMsg = err.error.message;
       }
