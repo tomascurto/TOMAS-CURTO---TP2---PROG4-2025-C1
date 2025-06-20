@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Publicacion } from '../../componentes/publicacion/publicacion';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-publicaciones',
@@ -19,7 +20,7 @@ export class Publicaciones {
   limit = 5;
   usuarioId = 'usuario-demo';
 
-  constructor(private publicacionesService: PublicacionesService) {
+  constructor(private publicacionesService: PublicacionesService, private router: Router) {
     this.cargarPublicaciones();
   }
 
@@ -51,5 +52,8 @@ export class Publicaciones {
     this.cargarPublicaciones();
   }
 
+  irADetalle(publicacionId: string) {
+    this.router.navigate(['/publicaciones', publicacionId]);
+  }
   
 }

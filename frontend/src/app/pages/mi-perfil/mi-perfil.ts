@@ -4,6 +4,7 @@ import { PerfilService } from '../../services/perfil.service';
 import { PerfilResponse } from '../../models/perfil-response.model';
 import { Publicacion } from '../../componentes/publicacion/publicacion'; 
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class MiPerfil implements OnInit {
   error?: string;
   usuarioId = ''; 
 
-  constructor(private perfilService: PerfilService) {}
+  constructor(private perfilService: PerfilService, private router: Router) {}
 
   ngOnInit() {
     this.perfilService.getMiPerfil().subscribe({
@@ -38,5 +39,8 @@ export class MiPerfil implements OnInit {
     }
   }
 
+  irADetalle(publicacionId: string) {
+    this.router.navigate(['/publicaciones', publicacionId]);
+  }
   
 }

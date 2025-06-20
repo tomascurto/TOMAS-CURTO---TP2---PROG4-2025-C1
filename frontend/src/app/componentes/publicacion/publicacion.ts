@@ -13,6 +13,7 @@ export class Publicacion {
   @Input() publicacion!: any;
   @Input() usuarioId!: string;
   @Output() likeChanged = new EventEmitter<any>();
+  @Output() verDetalle = new EventEmitter<string>();
 
   constructor(private publicacionesService: PublicacionesService) {}
 

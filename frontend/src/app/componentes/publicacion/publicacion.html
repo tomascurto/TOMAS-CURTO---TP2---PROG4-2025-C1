@@ -1,4 +1,4 @@
-<div class="publicacion">
+<div class="publicacion" (click)="verDetalle.emit(publicacion._id)">
   <div class="publicacion-header">
     <div class="publicacion-autor">
       <strong>{{ publicacion.autor?.firstName+' '+publicacion.autor?.lastName || 'Anónimo' }}</strong>

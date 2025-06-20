@@ -9,9 +9,10 @@ import { PerfilService } from '../../services/perfil.service';
 
 @Component({
   selector: 'app-publicacion-detalle',
+  standalone: true,
   imports: [CommonModule, Publicacion],
   templateUrl: './publicacion-detalle.html',
-  styleUrl: './publicacion-detalle.css'
+  styleUrls: ['./publicacion-detalle.css'] // ✅ CORREGIDO
 })
 export class PublicacionDetalle implements OnInit {
   publicacion: any;
@@ -41,8 +42,13 @@ export class PublicacionDetalle implements OnInit {
 
     this.publicacionId = this.route.snapshot.paramMap.get('id') || '';
 
-    this.publicacionesService.obtenerPorId(this.publicacionId).subscribe((pub) => {
-      this.publicacion = pub;
+    this.publicacionesService.obtenerPorId(this.publicacionId).subscribe({
+      next: (res) => {
+        this.publicacion = res.publicacion;
+      },
+      error: (err) => {
+        console.error('Error al obtener publicación:', err);
+      }
     });
 
     this.cargarComentarios();
@@ -54,11 +60,17 @@ export class PublicacionDetalle implements OnInit {
 
     this.comentariosService
       .listarComentarios(this.publicacionId, this.offset, this.limit)
-      .subscribe((res) => {
-        if (res.length < this.limit) this.hayMas = false;
-        this.comentarios.push(...res);
-        this.offset += this.limit;
-        this.cargando = false;
+      .subscribe({
+        next: (res) => {
+          if (res.length < this.limit) this.hayMas = false;
+          this.comentarios.push(...res);
+          this.offset += this.limit;
+          this.cargando = false;
+        },
+        error: (err) => {
+          console.error('Error al cargar comentarios:', err);
+          this.cargando = false;
+        }
       });
   }
 }

@@ -22,7 +22,8 @@
         *ngFor="let pub of perfil.publicaciones"
         [publicacion]="pub"
         [usuarioId]="usuarioId"
-        (likeChanged)="onLikeChanged($event)">
+        (likeChanged)="onLikeChanged($event)"
+        (verDetalle)="irADetalle($event)">
       </app-publicacion>
     </div>
 
