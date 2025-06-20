@@ -139,4 +139,14 @@ export class PublicacionesService {
     publicacion.likes = publicacion.likes.filter(id => !id.equals(objectId));
     return publicacion.save();
   }
+
+  async obtenerPorId(id: string) {
+    const pub = await this.publicacionModel
+      .findById(id)
+      .populate('autor', 'firstName lastName username profileImageUrl')
+      .exec();
+
+    if (!pub) throw new NotFoundException('Publicación no encontrada');
+    return pub;
+  }
 }

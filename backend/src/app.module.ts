@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { ComentariosModule } from './comentarios/comentarios.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       inject: [ConfigService],
     }),
     UsersModule,
+    ComentariosModule,
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true, 

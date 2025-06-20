@@ -88,4 +88,10 @@ export class PublicacionesController {
     return { message: 'Like removido', publicacion };
   }
 
+  @Get(':id')
+  async obtenerPorId(@Param('id') id: string) {
+    const pub = await this.publicacionesService.obtenerPorId(id);
+    return { publicacion: pub };
+  }
+
 }

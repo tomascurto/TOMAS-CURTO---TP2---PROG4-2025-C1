@@ -30,4 +30,8 @@ constructor(private http: HttpClient) {}
   unlike(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}/like`);
   }
+
+  obtenerPorId(id: string) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 }

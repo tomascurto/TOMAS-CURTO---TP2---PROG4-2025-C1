@@ -1,0 +1,24 @@
+<div *ngIf="publicacion">
+  <app-publicacion [publicacion]="publicacion" [usuarioId]="usuarioId || ''"></app-publicacion>
+</div>
+
+<div class="comentarios">
+  <h3>Comentarios</h3>
+  <div *ngFor="let comentario of comentarios" class="comentario">
+    <div class="comentario-header">
+      <img
+        *ngIf="comentario.autor.profileImageUrl"
+        [src]="comentario.autor.profileImageUrl"
+        class="comentario-avatar"
+        alt = "imagen";
+      />
+      <strong>{{ comentario.autor.username }}</strong>
+      <span class="comentario-fecha">{{ comentario.createdAt | date: 'short' }}</span>
+      <span *ngIf="comentario.modificado" class="comentario-mod">(modificado)</span>
+    </div>
+    <p>{{ comentario.mensaje }}</p>
+  </div>
+
+  <button (click)="cargarComentarios()" *ngIf="hayMas && !cargando">Cargar más</button>
+  <p *ngIf="cargando">Cargando...</p>
+</div>
