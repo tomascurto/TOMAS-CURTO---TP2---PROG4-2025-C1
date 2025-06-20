@@ -6,18 +6,22 @@ import { ComentariosService } from '../../services/comentarios.service';
 import { Publicacion } from '../../componentes/publicacion/publicacion';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-publicacion-detalle',
   standalone: true,
-  imports: [CommonModule, Publicacion],
+  imports: [CommonModule, Publicacion, ReactiveFormsModule],
   templateUrl: './publicacion-detalle.html',
-  styleUrls: ['./publicacion-detalle.css'] // ✅ CORREGIDO
+  styleUrls: ['./publicacion-detalle.css'] 
 })
 export class PublicacionDetalle implements OnInit {
   publicacion: any;
   comentarios: any[] = [];
   usuarioId: string | null = null;
+  comentarioForm: FormGroup;
+  perfil: any; 
 
   private publicacionId: string = '';
   offset: number = 0;
@@ -31,12 +35,18 @@ export class PublicacionDetalle implements OnInit {
     private comentariosService: ComentariosService,
     private authService: AuthService,
     private perfilService: PerfilService,
-  ) {}
+    private fb: FormBuilder
+  ) {
+    this.comentarioForm = this.fb.group({
+      mensaje: ['', [Validators.required, Validators.maxLength(500)]],
+    });
+  }
 
   ngOnInit() {
     this.perfilService.getMiPerfil().subscribe({
       next: data => {
         this.usuarioId = data.user._id;
+        this.perfil = data; 
       }
     });
 
@@ -55,22 +65,53 @@ export class PublicacionDetalle implements OnInit {
   }
 
   cargarComentarios() {
-    if (this.cargando || !this.hayMas) return;
-    this.cargando = true;
+      if (this.cargando || !this.hayMas) return;
+      this.cargando = true;
 
-    this.comentariosService
-      .listarComentarios(this.publicacionId, this.offset, this.limit)
-      .subscribe({
-        next: (res) => {
+      this.comentariosService
+        .listarComentarios(this.publicacionId, this.offset, this.limit)
+        .subscribe((res) => {
           if (res.length < this.limit) this.hayMas = false;
+
+          
           this.comentarios.push(...res);
+          
           this.offset += this.limit;
           this.cargando = false;
-        },
-        error: (err) => {
-          console.error('Error al cargar comentarios:', err);
-          this.cargando = false;
-        }
+        });
+    }
+
+  enviarComentario() {
+    if (this.comentarioForm.invalid || !this.publicacionId) return;
+
+    const mensaje = this.comentarioForm.value.mensaje;
+
+    this.comentariosService.crearComentario(this.publicacionId, mensaje).subscribe({
+      next: (nuevoComentario) => {
+
+        const comentarioCompleto = {
+          ...nuevoComentario,
+          mensaje: mensaje,
+          autor: {
+            _id: this.usuarioId,
+            username: this.perfil?.user.username || 'Anónimo',
+            profileImageUrl: this.perfil?.user.profileImageUrl || ''
+          }
+        };
+
+        this.comentarios.push(comentarioCompleto);
+        this.comentarioForm.reset();
+      },
+      error: err => console.error('Error al enviar comentario:', err)
+    });
+  }
+
+  recargarComentarios() {
+    if (!this.publicacionId) return;
+
+    this.comentariosService.listarComentarios(this.publicacionId, 0, this.offset + this.limit)
+      .subscribe((res) => {
+        this.comentarios = res;
       });
   }
 }

@@ -42,7 +42,7 @@ export class ComentariosService {
     async listar(publicacionId: string, offset = 0, limit = 10): Promise<ComentarioResponseDto[]> {
         const comentarios = await this.comentarioModel
             .find({ publicacion: new Types.ObjectId(publicacionId) })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 })
             .skip(offset)
             .limit(limit)
             .populate('autor', 'username profileImageUrl')
