@@ -5,8 +5,8 @@ import { UseGuards } from '@nestjs/common';
 import { Get, Delete, Post, Body, Param } from '@nestjs/common';
 import { Req } from '@nestjs/common';
 import { RequestWithUser } from '../interfaces/request-with-user.interface';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
+import { RolesGuard } from '../../auth/roles.guard';
+import { Roles } from '../../auth/roles.decorator';
 import { CrearUsuarioAdminDto } from '../dto/crear-usuario-admin.dto';
 
 @Controller('users')

@@ -1,1 +1,29 @@
-<p>usuarios-dashboard works!</p>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Rol</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of usuarios">
+      <td>{{ user.firstName }} {{ user.lastName }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td>{{ user.activo ? 'Activo' : 'Deshabilitado' }}</td>
+      <td>
+        <button *ngIf="user.activo" (click)="bajaUsuario(user._id)">Deshabilitar</button>
+        <button *ngIf="!user.activo" (click)="altaUsuario(user._id)">Rehabilitar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<button (click)="abrirFormulario = true">Agregar usuario</button>
+
+<app-registro *ngIf="abrirFormulario" (cerrar)="abrirFormulario = false"></app-registro>

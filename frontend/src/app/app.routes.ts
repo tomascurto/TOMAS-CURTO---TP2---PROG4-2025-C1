@@ -8,6 +8,8 @@ import { NoAuthGuard } from './guards/no-auth.guard';
 import { Publicar } from './pages/publicar/publicar';
 import { PublicacionDetalle } from './pages/publicacion-detalle/publicacion-detalle';
 import { Loading } from './loading/loading';
+import { AdminGuard } from './guards/admin.guard';
+import { UsuariosDashboard } from './pages/dashboard/usuarios-dashboard/usuarios-dashboard';
 
 
 export const routes: Routes = [
@@ -17,6 +19,7 @@ export const routes: Routes = [
     { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [AuthGuard] },
     { path: 'miperfil', component: MiPerfil , canActivate: [AuthGuard]},
     { path: 'publicar', component: Publicar , canActivate: [AuthGuard]},
+    { path: 'dashboard/usuarios', component: UsuariosDashboard, canActivate: [AdminGuard],},
     { path: '', component: Loading },
     { path: '**', redirectTo: '' }
 ];
