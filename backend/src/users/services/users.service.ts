@@ -5,6 +5,10 @@ import { User } from '../schemas/user.schema';
 import { UserDocument } from '../schemas/user.schema';
 import { Types } from 'mongoose';
 import { Publicacion } from '../../publicaciones/schemas/publicacion.schema/publicacion.schema';
+import * as bcrypt from 'bcrypt';
+import { CrearUsuarioAdminDto } from '../dto/crear-usuario-admin.dto';
+
+
 
 
 @Injectable()
@@ -26,10 +30,28 @@ export class UsersService {
         return createdUser.save();
     }
 
-    async obtenerPerfilCompleto(userId: string) {
-  const user = await this.userModel.findById(userId).lean().exec();
+    async getAllUsers() {
+        return this.userModel.find().select('-password').lean().exec();
+    }
 
-  const publicaciones = await this.publicacionModel.aggregate([
+    async crearDesdeAdmin(dto: CrearUsuarioAdminDto) {
+        const hash = await bcrypt.hash(dto.password, 10);
+        const user = new this.userModel({ ...dto, password: hash });
+        return user.save();
+    }
+
+    async bajaLogica(userId: string) {
+        return this.userModel.findByIdAndUpdate(userId, { activo: false }, { new: true });
+    }
+
+    async altaLogica(userId: string) {
+        return this.userModel.findByIdAndUpdate(userId, { activo: true }, { new: true });
+    }
+
+    async obtenerPerfilCompleto(userId: string) {
+        const user = await this.userModel.findById(userId).lean().exec();
+
+        const publicaciones = await this.publicacionModel.aggregate([
         { $match: { autor: new Types.ObjectId(userId), activo: true } },
         { $sort: { createdAt: -1 } },
         { $limit: 3 },
