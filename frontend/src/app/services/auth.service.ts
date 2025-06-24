@@ -29,6 +29,17 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-
+  autorizar(): Observable<any> {
+  const token = this.getToken();
+  return this.http.post(
+    `${this.baseUrl}/autorizar`,
+    {}, 
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
 
 }

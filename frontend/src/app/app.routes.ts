@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { NoAuthGuard } from './guards/no-auth.guard';
 import { Publicar } from './pages/publicar/publicar';
 import { PublicacionDetalle } from './pages/publicacion-detalle/publicacion-detalle';
+import { Loading } from './loading/loading';
 
 
 export const routes: Routes = [
@@ -16,6 +17,6 @@ export const routes: Routes = [
     { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [AuthGuard] },
     { path: 'miperfil', component: MiPerfil , canActivate: [AuthGuard]},
     { path: 'publicar', component: Publicar , canActivate: [AuthGuard]},
-    { path: '', redirectTo: 'publicaciones', pathMatch: 'full' },
-    { path: '**', redirectTo: 'publicaciones' }
+    { path: '', component: Loading },
+    { path: '**', redirectTo: '' }
 ];
