@@ -30,16 +30,28 @@ export class AuthService {
   }
 
   autorizar(): Observable<any> {
-  const token = this.getToken();
-  return this.http.post(
-    `${this.baseUrl}/autorizar`,
-    {}, 
-    {
+    const token = this.getToken();
+    return this.http.post(
+      `${this.baseUrl}/autorizar`,
+      {}, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
+
+  refrescarToken(): Observable<{ token: string }> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('No hay token para refrescar');
+    }
+    return this.http.post<{ token: string }>(`${this.baseUrl}/refrescar`, {}, {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }
-  );
-}
+    });
+  }
 
 }

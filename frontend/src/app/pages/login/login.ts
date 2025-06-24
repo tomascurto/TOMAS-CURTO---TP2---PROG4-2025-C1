@@ -5,13 +5,14 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-login',
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
@@ -23,7 +24,8 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private sessionService: SessionService
   ) {
     this.loginForm = this.fb.group({
       usernameOrEmail: ['', Validators.required],
@@ -37,6 +39,7 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
+        this.sessionService.startSessionTimer();
         this.router.navigate(['/publicaciones']);
       },
       error: (err) => {

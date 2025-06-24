@@ -1,0 +1,12 @@
+.session-warning {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #07ff9c;
+      padding: 10px;
+      text-align: center;
+      z-index: 1000;
+    }
+button {
+    margin: 0 5px;
+}

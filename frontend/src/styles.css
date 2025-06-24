@@ -24,7 +24,7 @@ li a {
 
 li a.active {
   font-weight: bold;
-  border-bottom: 2px solid yellow;
+  border-bottom: 2px solid #07ff9c;
 }
 
 .navbar-avatar img {
@@ -44,4 +44,17 @@ li a.active {
   align-items: center;
   justify-content: center;
   font-size: 13px;
+}
+
+.session-warning {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #07ff9c;
+      padding: 10px;
+      text-align: center;
+      z-index: 1000;
+    }
+button {
+    margin: 0 5px;
 }
