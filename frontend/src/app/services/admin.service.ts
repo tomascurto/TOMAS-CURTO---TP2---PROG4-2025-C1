@@ -39,4 +39,9 @@ export class AdminService {
   createUser(userData: Partial<User>): Observable<User> {
     return this.http.post<User>(this.apiUrl, userData);
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
 }
