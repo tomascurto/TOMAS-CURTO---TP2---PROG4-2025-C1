@@ -6,6 +6,8 @@ export interface Usuario {
   email: string;
   bio?: string;
   profileImageUrl?: string;
+  role: string;
+  activo: boolean;
 }
 
 export interface Comentario {

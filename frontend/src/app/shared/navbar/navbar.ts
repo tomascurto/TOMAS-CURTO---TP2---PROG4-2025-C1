@@ -17,6 +17,7 @@ import { filter } from 'rxjs/operators';
 export class Navbar  implements OnInit{
   username: string | null = null;
   avatar: string | undefined = undefined;
+  role: string = "";
   constructor(private authService: AuthService, private router: Router, private perfilService: PerfilService) {}
   
   ngOnInit(): void {
@@ -28,17 +29,27 @@ export class Navbar  implements OnInit{
             next: (perfil) => {
               this.username = perfil.user.username;
               this.avatar = perfil.user.profileImageUrl;
+              this.role = perfil.user.role;
             },
             error: () => {
               this.username = null;
               this.avatar = undefined;
+              this.role = "";
             }
           });
         } else {
           this.username = null;
           this.avatar = undefined;
+          this.role = "";
         }
       });
+  }
+
+  isAdmin(): boolean {
+    if (this.role=="administrador"){
+      return true
+    }
+    else {return false}
   }
 
   isLoggedIn(): boolean {

@@ -26,4 +26,4 @@
 
 <button (click)="abrirFormulario = true">Agregar usuario</button>
 
-<app-registro *ngIf="abrirFormulario" (cerrar)="abrirFormulario = false"></app-registro>
+<app-registro *ngIf="abrirFormulario" [esAdmin]="true"  (cerrar)="onCerrarFormulario()"></app-registro>

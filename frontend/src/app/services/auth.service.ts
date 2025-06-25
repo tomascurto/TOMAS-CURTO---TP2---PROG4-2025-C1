@@ -29,6 +29,10 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
+  registerFromAdmin(data: FormData) {
+    return this.http.post(`${this.baseUrl}/registro`, data);
+  }
+
   autorizar(): Observable<any> {
     const token = this.getToken();
     return this.http.post(

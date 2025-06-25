@@ -20,7 +20,7 @@
 }
 
 .comentario {
-  background-color: #f8f9fa;
+  background-color: #d4fdf1;
   padding: 0.75rem;
   border-radius: 6px;
 }
@@ -41,7 +41,7 @@
 
 .comentario-mod {
   font-style: italic;
-  color: gray;
+  color: rgb(209, 253, 242);
   margin-left: auto;
   font-size: 0.85rem;
 }
@@ -64,7 +64,7 @@
 .comentario-form button {
   align-self: flex-end;
   padding: 0.5rem 1rem;
-  background-color: #007bff;
+  background-color: #72e4b1;
   border: none;
   color: white;
   border-radius: 4px;

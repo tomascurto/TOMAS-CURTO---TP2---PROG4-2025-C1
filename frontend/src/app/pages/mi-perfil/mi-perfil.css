@@ -1,10 +1,10 @@
 .perfil-card {
   display: flex;
   align-items: center;
-  background: #f4f4f4;
+  background: #e7fff8;
   padding: 16px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.192);
   margin: 50px;
   gap: 16px;
   max-width: 500px;

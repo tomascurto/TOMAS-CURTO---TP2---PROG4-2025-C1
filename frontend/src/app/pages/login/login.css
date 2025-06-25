@@ -39,7 +39,7 @@
   padding: 0.75rem;
   font-size: 1rem;
   font-weight: 700;
-  background-color: #2f80ed;
+  background-color: #2fedb4;
   color: white;
   border: none;
   border-radius: 4px;
@@ -47,7 +47,7 @@
 }
 
 .card-form button:hover {
-  background-color: #1366d6;
+  background-color: #13d6a5;
 }
 
 

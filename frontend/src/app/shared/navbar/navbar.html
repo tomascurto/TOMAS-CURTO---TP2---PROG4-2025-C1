@@ -4,6 +4,7 @@
     <ng-container *ngIf="isLoggedIn()">
       <li><a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a></li>
       <li><a routerLink="/publicar" routerLinkActive="active">Publicar</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/dashboard/usuarios" routerLinkActive="active">Usuarios</a></li>
     </ng-container>
 
     <ng-container  *ngIf="!isLoggedIn()">
