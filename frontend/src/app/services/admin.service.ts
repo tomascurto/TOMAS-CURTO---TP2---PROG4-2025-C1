@@ -33,7 +33,7 @@ export class AdminService {
   }
 
   enableUser(userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/enable/${userId}`, {});
+    return this.http.post(`${this.apiUrl}/rehabilitar/${userId}`, {});
   }
 
   createUser(userData: Partial<User>): Observable<User> {

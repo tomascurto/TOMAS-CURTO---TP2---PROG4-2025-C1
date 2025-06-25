@@ -19,6 +19,10 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) throw new UnauthorizedException('Contraseña incorrecta');
 
+    if (!user.activo) {
+        throw new UnauthorizedException('Usuario deshabilitado. No está autorizado a ingresar.');
+    }
+
     const { password: _, ...userWithoutPassword } = user.toObject();
     return userWithoutPassword;
   }
