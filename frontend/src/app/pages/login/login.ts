@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '../../services/session.service';
+import { Token } from '@angular/compiler';
 
 @Component({
   selector: 'app-login',
@@ -39,6 +40,8 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        console.log('ROL DEL USUARIO:', res.user.role);
         this.sessionService.startSessionTimer();
         this.router.navigate(['/publicaciones']);
       },

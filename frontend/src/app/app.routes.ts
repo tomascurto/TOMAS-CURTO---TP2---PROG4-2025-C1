@@ -19,8 +19,7 @@ export const routes: Routes = [
     { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [AuthGuard] },
     { path: 'miperfil', component: MiPerfil , canActivate: [AuthGuard]},
     { path: 'publicar', component: Publicar , canActivate: [AuthGuard]},
-    { path: 'dashboard/usuarios', component: UsuariosDashboard},
+    { path: 'dashboard/usuarios', component: UsuariosDashboard, canActivate: [AdminGuard],},
     { path: '', component: Loading },
     { path: '**', redirectTo: '' }
 ];
-//, canActivate: [AdminGuard],

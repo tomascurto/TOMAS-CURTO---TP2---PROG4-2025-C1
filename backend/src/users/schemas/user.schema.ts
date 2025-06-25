@@ -36,6 +36,9 @@ export class User {
 
   @Prop({ default: UserRole.USUARIO })
   role!: UserRole;
+
+  @Prop({ default: true }) 
+  activo!: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
