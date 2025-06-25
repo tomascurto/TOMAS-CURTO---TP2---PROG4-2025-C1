@@ -8,6 +8,7 @@ import { RequestWithUser } from '../interfaces/request-with-user.interface';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { CrearUsuarioAdminDto } from '../dto/crear-usuario-admin.dto';
+import { UserRole } from '../schemas/user.schema';
 
 @Controller('users')
 export class UsersController {
@@ -20,28 +21,28 @@ export class UsersController {
   }    
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('administrador')
+  @Roles(UserRole.ADMIN)
   @Get()
   async getAllUsers() {
     return this.usersService.getAllUsers();
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('administrador')
+  @Roles(UserRole.ADMIN)
   @Post()
   async crearUsuarioDesdeAdmin(@Body() dto: CrearUsuarioAdminDto) {
     return this.usersService.crearDesdeAdmin(dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('administrador')
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async deshabilitarUsuario(@Param('id') id: string) {
     return this.usersService.bajaLogica(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('administrador')
+  @Roles(UserRole.ADMIN)
   @Post('rehabilitar/:id')
   async rehabilitarUsuario(@Param('id') id: string) {
     return this.usersService.altaLogica(id);
