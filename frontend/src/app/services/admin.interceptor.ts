@@ -17,7 +17,6 @@ export const adminInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next:
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 403) {
-        //window.location.href = '/unauthorized';
       }
       return throwError(() => error);
     })
