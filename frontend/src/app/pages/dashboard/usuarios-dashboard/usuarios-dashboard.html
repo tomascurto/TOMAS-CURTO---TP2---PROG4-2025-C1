@@ -19,12 +19,8 @@
       <td>
         <button *ngIf="user.activo" (click)="bajaUsuario(user._id)">Deshabilitar</button>
         <button *ngIf="!user.activo" (click)="altaUsuario(user._id)">Rehabilitar</button>
-      </td>
-      <td>
-        <button *ngIf="user.activo" (click)="bajaUsuario(user._id)">Deshabilitar</button>
-        <button *ngIf="!user.activo" (click)="altaUsuario(user._id)">Rehabilitar</button>
-        <button (click)="toggleRol(user.id)">
-          {{ user.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin' }}
+        <button (click)="toggleRol(user._id)">
+          {{ user.role === 'administrador' ? 'Quitar Admin' : 'Hacer Admin' }}
         </button>
       </td>
     </tr>
