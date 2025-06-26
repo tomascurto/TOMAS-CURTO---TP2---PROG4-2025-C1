@@ -44,4 +44,8 @@ export class AdminService {
     return localStorage.getItem('token');
   }
 
+  cambiarRolUsuario(id: string) {
+    return this.http.post(`${this.apiUrl}/${id}/toggle-rol`, {});
+  }
+
 }

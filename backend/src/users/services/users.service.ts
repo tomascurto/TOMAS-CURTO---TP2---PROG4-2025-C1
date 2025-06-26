@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { Publicacion } from '../../publicaciones/schemas/publicacion.schema/publicacion.schema';
 import * as bcrypt from 'bcrypt';
 import { CrearUsuarioAdminDto } from '../dto/crear-usuario-admin.dto';
+import { UserRole } from '../schemas/user.schema';
 
 
 
@@ -46,6 +47,17 @@ export class UsersService {
 
     async altaLogica(userId: string) {
         return this.userModel.findByIdAndUpdate(userId, { activo: true }, { new: true });
+    }
+
+    async toggleRol(userId: string): Promise<User | null> {
+        const user = await this.userModel.findById(userId);
+        if (!user) return null;
+
+        const nuevoRol = user.role === UserRole.ADMIN ? UserRole.USUARIO : UserRole.ADMIN;
+        user.role = nuevoRol;
+        await user.save();
+
+        return user.toObject(); 
     }
 
     async obtenerPerfilCompleto(userId: string) {

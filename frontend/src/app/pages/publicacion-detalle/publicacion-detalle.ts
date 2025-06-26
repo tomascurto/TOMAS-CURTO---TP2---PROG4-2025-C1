@@ -114,4 +114,6 @@ export class PublicacionDetalle implements OnInit {
         this.comentarios = res;
       });
   }
+
+  
 }

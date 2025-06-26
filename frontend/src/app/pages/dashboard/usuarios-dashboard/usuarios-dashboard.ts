@@ -41,4 +41,8 @@ export class UsuariosDashboard implements OnInit {
     this.cargarUsuarios();  
   }
 
+  toggleRol(user: any) {
+    this.adminService.cambiarRolUsuario(user._id).subscribe(() => this.cargarUsuarios());
+  }
+
 }

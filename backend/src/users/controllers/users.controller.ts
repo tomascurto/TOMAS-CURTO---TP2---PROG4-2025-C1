@@ -9,6 +9,8 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { CrearUsuarioAdminDto } from '../dto/crear-usuario-admin.dto';
 import { UserRole } from '../schemas/user.schema';
+import { BadRequestException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -48,6 +50,18 @@ export class UsersController {
     return this.usersService.altaLogica(id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Post(':id/toggle-rol')
+  async toggleRol(@Param('id') id: string) {
+    const usuarioActualizado = await this.usersService.toggleRol(id);
+
+    if (!usuarioActualizado) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    return usuarioActualizado;
+  }
   
 
 
