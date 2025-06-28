@@ -138,7 +138,7 @@ export class PublicacionesController {
     
   console.log('req.user:', req.user); 
     
-  const esAdmin = req.user!.role === 'ADMIN';
+  const esAdmin = req.user!.role === UserRole.ADMIN;
   const usuarioId = esAdmin ? null : req.user!.userId;
     const bajas = await this.publicacionesService.listarPorEstado(
       false,
