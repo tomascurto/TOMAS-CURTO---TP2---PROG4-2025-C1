@@ -1,4 +1,17 @@
 <div class="detalle-container">
+  <div *ngIf="usuarioId === publicacion.autor._id">
+    <button (click)="editarModo = !editarModo">Editar publicación</button>
+  </div>
+
+  <button *ngIf="usuarioId === publicacion.autor._id || perfil.user.rol === 'admin'" 
+        (click)="borrarPublicacion()">Borrar publicación</button>
+
+  <form *ngIf="editarModo" [formGroup]="formEdicion" (ngSubmit)="guardarEdicion()">
+    <input formControlName="titulo" placeholder="Título" />
+    <textarea formControlName="mensaje" placeholder="Descripción"></textarea>
+    <button type="submit" [disabled]="formEdicion.invalid">Guardar</button>
+  </form>
+
   <div *ngIf="publicacion">
     <app-publicacion
       [publicacion]="publicacion"

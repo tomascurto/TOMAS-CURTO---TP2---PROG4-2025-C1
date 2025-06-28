@@ -35,8 +35,13 @@ export class ComentariosController {
   }
 
   @Put(':comentarioId')
-  async editar(@Param('comentarioId') comentarioId: string, @Body() dto: EditarComentarioDto) {
-    const comentario = await this.comentariosService.editar(comentarioId, dto);
+  async editar(
+    @Param('comentarioId') comentarioId: string,
+    @Body() dto: EditarComentarioDto,
+    @Req() req: RequestConUsuario,
+  ) {
+    const usuarioId = req.user!.userId;
+    const comentario = await this.comentariosService.editar(comentarioId, dto, usuarioId);
     return { message: 'Comentario modificado', comentario };
   }
 

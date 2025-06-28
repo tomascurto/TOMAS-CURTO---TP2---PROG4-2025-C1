@@ -34,4 +34,14 @@ constructor(private http: HttpClient) {}
   obtenerPorId(id: string) {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
+
+  bajaLogica(id: string) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  editarPublicacion(id: string, datos: { titulo: string; mensaje: string }) {
+    return this.http.put(`${this.apiUrl}/${id}`, datos);
+  }
+
+
 }

@@ -9,6 +9,7 @@ import {
   Delete,
   Param,
   Query,
+  Put,
   UseGuards
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -16,11 +17,15 @@ import { PublicacionesService } from '../../../publicaciones/service/publicacion
 import { CrearPublicacionDto } from '../../../publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
 
 import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
-
+import { UserRole } from 'src/users/schemas/user.schema';
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
+import { Roles } from 'src/auth/roles.decorator';
 
 interface RequestConUsuario extends Request {
-  user?: { userId: string };
+  user?: { 
+    userId: string;
+    rol?: string; 
+  };
 }
 
 @UseGuards(JwtAuthGuard)
@@ -54,7 +59,8 @@ export class PublicacionesController {
   @Delete(':id')
   async bajaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    await this.publicacionesService.bajaLogica(id, usuarioId);
+    const esAdmin = req.user?.rol === UserRole.ADMIN; 
+    await this.publicacionesService.bajaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación dada de baja lógicamente' };
   }
 
@@ -92,6 +98,17 @@ export class PublicacionesController {
   async obtenerPorId(@Param('id') id: string) {
     const pub = await this.publicacionesService.obtenerPorId(id);
     return { publicacion: pub };
+  }
+
+  @Put(':id')
+  async editarPublicacion(
+    @Param('id') id: string,
+    @Body() dto: CrearPublicacionDto,
+    @Req() req: RequestConUsuario,
+  ) {
+    const usuarioId = req.user!.userId;
+    const actualizada = await this.publicacionesService.editarPublicacion(id, dto, usuarioId);
+    return { message: 'Publicación actualizada', publicacion: actualizada };
   }
 
 }

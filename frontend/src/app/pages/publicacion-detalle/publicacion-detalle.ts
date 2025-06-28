@@ -6,13 +6,13 @@ import { ComentariosService } from '../../services/comentarios.service';
 import { Publicacion } from '../../componentes/publicacion/publicacion';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormSubmittedEvent, FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-publicacion-detalle',
   standalone: true,
-  imports: [CommonModule, Publicacion, ReactiveFormsModule],
+  imports: [CommonModule, Publicacion, ReactiveFormsModule, FormsModule],
   templateUrl: './publicacion-detalle.html',
   styleUrls: ['./publicacion-detalle.css'] 
 })
@@ -22,12 +22,15 @@ export class PublicacionDetalle implements OnInit {
   usuarioId: string | null = null;
   comentarioForm: FormGroup;
   perfil: any; 
+  editarForm: boolean = false; 
+  formEdicion: FormGroup;  
 
   private publicacionId: string = '';
   offset: number = 0;
   limit: number = 5;
   cargando: boolean = false;
   hayMas: boolean = true;
+  editarModo: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,13 +39,18 @@ export class PublicacionDetalle implements OnInit {
     private authService: AuthService,
     private perfilService: PerfilService,
     private fb: FormBuilder
+    
   ) {
     this.comentarioForm = this.fb.group({
       mensaje: ['', [Validators.required, Validators.maxLength(500)]],
     });
+    this.formEdicion = this.fb.group({
+      titulo: ['', Validators.required],
+      mensaje: ['', Validators.required],});
   }
 
   ngOnInit() {
+    
     this.perfilService.getMiPerfil().subscribe({
       next: data => {
         this.usuarioId = data.user._id;
@@ -64,6 +72,36 @@ export class PublicacionDetalle implements OnInit {
     this.cargarComentarios();
   }
 
+  guardarEdicion() {
+    if (this.formEdicion.invalid || !this.publicacionId) return;
+
+    this.publicacionesService.editarPublicacion(this.publicacionId, this.formEdicion.value)
+      .subscribe({
+        next: (res: any) => {
+          this.publicacion = res.publicacion;
+          this.editarModo = false;
+        },
+        error: (err: any) => console.error('Error al editar publicación:', err)
+      });
+  }
+
+  activarEdicion() {
+    this.editarForm = true;
+    this.formEdicion.patchValue({
+      titulo: this.publicacion.titulo,
+      mensaje: this.publicacion.mensaje
+    });
+  }
+
+  borrarPublicacion() {
+    if (!this.publicacionId) return;
+
+    this.publicacionesService.bajaLogica(this.publicacionId).subscribe({
+      next: () => {
+      },
+      error: (err: any) => console.error('Error al borrar:', err)
+    });
+  }
   cargarComentarios() {
       if (this.cargando || !this.hayMas) return;
       this.cargando = true;

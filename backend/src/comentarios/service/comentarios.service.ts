@@ -5,6 +5,7 @@ import { Model, Types } from 'mongoose';
 import { CrearComentarioDto } from '../dto/crear-comentario.dto';
 import { EditarComentarioDto } from '../dto/editar-comentario.dto';
 import { ComentarioResponseDto } from '../dto/comentario-response.dto';
+import { UnauthorizedException } from '@nestjs/common';
 
 interface ComentarioConTimestamps extends Comentario {
   _id: Types.ObjectId;
@@ -30,14 +31,18 @@ export class ComentariosService {
     return nuevo.save();
   }
 
-  async editar(comentarioId: string, dto: EditarComentarioDto) {
-    const comentario = await this.comentarioModel.findById(comentarioId);
-    if (!comentario) throw new NotFoundException('Comentario no encontrado');
+ async editar(comentarioId: string, dto: EditarComentarioDto, usuarioId: string) {
+  const comentario = await this.comentarioModel.findById(comentarioId);
 
-    comentario.mensaje = dto.mensaje;
-    comentario.modificado = true;
-    return comentario.save();
-  }
+  if (!comentario) throw new NotFoundException('Comentario no encontrado');
+  if (comentario.autor.toString() !== usuarioId)
+    throw new UnauthorizedException('No puedes editar este comentario');
+
+  comentario.mensaje = dto.mensaje;
+  comentario.modificado = true;
+
+  return comentario.save();
+}
 
     async listar(publicacionId: string, offset = 0, limit = 10): Promise<ComentarioResponseDto[]> {
         const comentarios = await this.comentarioModel

@@ -8,6 +8,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { ConflictException } from '@nestjs/common';
 import { Types } from 'mongoose'; 
+import { UnauthorizedException } from '@nestjs/common';
 
 const usuarioId = new Types.ObjectId("64b5f60d1e3c2c456789abcd");
 
@@ -45,16 +46,18 @@ export class PublicacionesService {
         return nueva.save();
     }
 
-    async bajaLogica(id: string, usuarioId: string) {
-        const publicacion = await this.publicacionModel.findById(id);
-        if (!publicacion) throw new NotFoundException('Publicación no encontrada');
-        if (publicacion.autor.toString() !== usuarioId) {
-            throw new NotFoundException('No tienes permisos para eliminar esta publicación');
-        }
+    async bajaLogica(id: string, usuarioId: string, esAdmin: boolean = false) {
+      const publicacion = await this.publicacionModel.findById(id);
+      if (!publicacion) throw new NotFoundException('Publicación no encontrada');
 
-        publicacion.activo = false;
-        return publicacion.save();
+      if (publicacion.autor.toString() !== usuarioId && !esAdmin) {
+        throw new UnauthorizedException('No tienes permisos');
+      }
+
+      publicacion.activo = false;
+      return publicacion.save();
     }
+
 
     async listarPublicaciones(
   orden: 'fecha' | 'likes',
@@ -148,5 +151,18 @@ export class PublicacionesService {
 
     if (!pub) throw new NotFoundException('Publicación no encontrada');
     return pub;
+  }
+
+  async editarPublicacion(id: string, dto: CrearPublicacionDto, usuarioId: string) {
+    const publicacion = await this.publicacionModel.findById(id);
+    if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+
+    if (publicacion.autor.toString() !== usuarioId)
+      throw new UnauthorizedException('No puedes editar esta publicación');
+
+    publicacion.titulo = dto.titulo;
+    publicacion.mensaje = dto.mensaje;
+
+    return publicacion.save();
   }
 }
