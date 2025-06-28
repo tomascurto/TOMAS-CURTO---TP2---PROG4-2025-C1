@@ -63,42 +63,47 @@ export class PublicacionDetalle implements OnInit {
   }
 
   ngOnInit() {
-    this.perfilService.getMiPerfil().subscribe({
-      next: (data) => {
-        this.usuarioId = data.user._id;
-        this.perfil = data;
-      },
-    });
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-          this.perfilService.getMiPerfil().subscribe({
-            next: (perfil) => {
-              this.username = perfil.user.username;
-              this.avatar = perfil.user.profileImageUrl;
-              this.role = perfil.user.role;
-            },
-            error: () => {
-              this.username = null;
-              this.avatar = undefined;
-              this.role = "";
-            }
-          });
+  this.perfilService.getMiPerfil().subscribe({
+    next: (data) => {
+      this.usuarioId = data.user._id;
+      this.perfil = data;
+      this.role = data.user.role;  
+    },
+    error: () => {
+      this.role = "";
+    }
+  });
+
+  this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe(() => {
+      this.perfilService.getMiPerfil().subscribe({
+        next: (perfil) => {
+          this.username = perfil.user.username;
+          this.avatar = perfil.user.profileImageUrl;
+          this.role = perfil.user.role;
+        },
+        error: () => {
+          this.username = null;
+          this.avatar = undefined;
+          this.role = "";
+        },
       });
-
-    this.publicacionId = this.route.snapshot.paramMap.get('id') || '';
-
-    this.publicacionesService.obtenerPorId(this.publicacionId).subscribe({
-      next: (res) => {
-        this.publicacion = res.publicacion;
-      },
-      error: (err) => {
-        console.error('Error al obtener publicación:', err);
-      },
     });
 
-    this.cargarComentarios();
-  }
+  this.publicacionId = this.route.snapshot.paramMap.get('id') || '';
+
+  this.publicacionesService.obtenerPorId(this.publicacionId).subscribe({
+    next: (res) => {
+      this.publicacion = res.publicacion;
+    },
+    error: (err) => {
+      console.error('Error al obtener publicación:', err);
+    },
+  });
+
+  this.cargarComentarios();
+}
 
   isAdmin(): boolean {
     if (this.role=="administrador"){
@@ -214,6 +219,8 @@ export class PublicacionDetalle implements OnInit {
 
     const esAutor = this.perfil.user._id === this.publicacion.autor._id;
     const esAdmin = this.isAdmin();
+    console.log('puedeModificar:', { esAutor, esAdmin, perfilId: this.perfil.user._id, autorId: this.publicacion.autor._id, role: this.role });
+
     return esAutor || esAdmin;
   }
 }
