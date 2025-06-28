@@ -113,12 +113,7 @@ export class PublicacionesController {
     return { message: 'Like removido', publicacion };
   }
 
-  @Get(':id')
-  async obtenerPorId(@Param('id') id: string) {
-    const pub = await this.publicacionesService.obtenerPorId(id);
-    return { publicacion: pub };
-  }
-
+  
   @Put(':id')
   async editarPublicacion(
     @Param('id') id: string,
@@ -133,7 +128,7 @@ export class PublicacionesController {
     );
     return { message: 'Publicación actualizada', publicacion: actualizada };
   }
-
+  
   @Get('bajas')
   async listarBajas(
     @Req() req: RequestConUsuario,
@@ -151,9 +146,9 @@ export class PublicacionesController {
     );
     return bajas;
   }
-
-    @Get('bajas/mias')
-    async obtenerMisPublicacionesBajas(
+  
+  @Get('bajas/mias')
+  async obtenerMisPublicacionesBajas(
     @Query('offset') offset: number = 0,
     @Query('limit') limit: number = 10,
     @Req() req: RequestConUsuario
@@ -166,5 +161,10 @@ export class PublicacionesController {
       offset,
       limit
     );
+  }
+  @Get(':id')
+  async obtenerPorId(@Param('id') id: string) {
+    const pub = await this.publicacionesService.obtenerPorId(id);
+    return { publicacion: pub };
   }
 }
