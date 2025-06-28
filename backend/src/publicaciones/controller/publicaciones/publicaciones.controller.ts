@@ -17,9 +17,9 @@ import { PublicacionesService } from '../../../publicaciones/service/publicacion
 import { CrearPublicacionDto } from '../../../publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
 
 import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
-import { UserRole } from 'src/users/schemas/user.schema';
+import { UserRole } from '../../../users/schemas/user.schema';
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
-import { Roles } from 'src/auth/roles.decorator';
+import { Roles } from '../../../auth/roles.decorator';
 
 interface RequestConUsuario extends Request {
   user?: { 
