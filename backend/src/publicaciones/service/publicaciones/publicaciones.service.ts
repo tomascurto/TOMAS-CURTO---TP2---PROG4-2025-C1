@@ -186,21 +186,22 @@ export class PublicacionesService {
     return publicacion.save();
   }
 
-  async listarPorEstado(activo: boolean, usuarioId: string, esAdmin = false, offset = 0, limit = 10) {
-  const filtro: any = { activo };
+  async listarPorEstado(
+    activo: boolean,
+    usuarioId: string,
+    esAdmin = false,
+    offset = 0,
+    limit = 10,
+  ) {
+    const filtro: any = { activo };
+    if (!esAdmin) filtro.autor = usuarioId;
 
-  if (!esAdmin) {
-    filtro.autor = usuarioId;
+    return this.publicacionModel
+      .find(filtro)
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .populate('autor', 'firstName lastName username profileImageUrl')
+      .exec();
   }
-
-  
-  
-  return this.publicacionModel
-    .find(filtro)
-    .sort({ createdAt: -1 })
-    .skip(offset)
-    .limit(limit)
-    .populate('autor', 'firstName lastName username profileImageUrl')
-    .exec();
-}
 }

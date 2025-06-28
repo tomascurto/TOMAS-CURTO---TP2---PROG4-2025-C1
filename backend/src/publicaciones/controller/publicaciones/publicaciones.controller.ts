@@ -145,8 +145,8 @@ export class PublicacionesController {
       false,
       usuarioId,
       esAdmin,
-      +offset,
-      +limit,
+      Number(offset),
+      Number(limit)
     );
     return bajas;
   }
