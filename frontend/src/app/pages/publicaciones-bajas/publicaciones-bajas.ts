@@ -93,4 +93,8 @@ export class PublicacionesBajas implements OnInit {
       this.publicaciones = this.publicaciones.filter((p) => p._id !== id);
     });
   }
+
+  irADetalle(publicacionId: string) {
+    this.router.navigate(['/publicaciones', publicacionId]);
+  }
 }

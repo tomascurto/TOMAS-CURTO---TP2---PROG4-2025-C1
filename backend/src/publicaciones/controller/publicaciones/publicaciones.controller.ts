@@ -75,7 +75,8 @@ export class PublicacionesController {
   @Post(':id/rehabilitar')
   async altaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    const esAdmin = req.user!.role === 'ADMIN';
+    const esAdmin = req.user!.role === UserRole.ADMIN;
+    
     await this.publicacionesService.altaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación reactivada correctamente' };
   }
