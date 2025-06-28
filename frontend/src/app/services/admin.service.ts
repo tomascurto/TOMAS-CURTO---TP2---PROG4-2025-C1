@@ -13,7 +13,7 @@ export interface User {
   profileImageUrl?: string;
   birthDate?: string;
   bio?: string;
-  active?: boolean;  
+  activo?: boolean;  
 }
 
 @Injectable({

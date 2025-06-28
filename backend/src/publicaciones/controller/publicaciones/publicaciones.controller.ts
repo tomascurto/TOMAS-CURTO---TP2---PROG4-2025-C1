@@ -156,7 +156,7 @@ export class PublicacionesController {
     const usuario = req.user as any;
     return this.publicacionesService.listarPorEstado(
       false,
-      usuario.id,
+      usuario.userId,
       false, 
       offset,
       limit
