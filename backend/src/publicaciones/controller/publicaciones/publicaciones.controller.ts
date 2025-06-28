@@ -135,8 +135,9 @@ export class PublicacionesController {
     @Query('offset') offset = '0',
     @Query('limit') limit = '10',
   ) {
-    const usuarioId = req.user!.userId;
-    const esAdmin = req.user!.role === 'ADMIN';
+    
+  const esAdmin = req.user!.role === 'ADMIN';
+  const usuarioId = esAdmin ? null : req.user!.userId;
     const bajas = await this.publicacionesService.listarPorEstado(
       false,
       usuarioId,

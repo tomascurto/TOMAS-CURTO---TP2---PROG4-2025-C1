@@ -188,7 +188,7 @@ export class PublicacionesService {
 
   async listarPorEstado(
     activo: boolean,
-    usuarioId: string,
+    usuarioId: string | null,
     esAdmin = false,
     offset = 0,
     limit = 10,
