@@ -73,7 +73,7 @@ export class AuthService {
             {
             sub: (user.userId || user._id).toString(),
             username: user.username,
-            role: user.profile || 'usuario',
+            role: user.role || 'usuario',
             },
             {
             expiresIn: '15m',
