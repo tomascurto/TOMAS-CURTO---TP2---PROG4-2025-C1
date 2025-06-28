@@ -10,6 +10,7 @@ import { PublicacionDetalle } from './pages/publicacion-detalle/publicacion-deta
 import { Loading } from './loading/loading';
 import { AdminGuard } from './guards/admin.guard';
 import { UsuariosDashboard } from './pages/dashboard/usuarios-dashboard/usuarios-dashboard';
+import { PublicacionesBajas } from './pages/publicaciones-bajas/publicaciones-bajas';
 
 
 export const routes: Routes = [
@@ -19,7 +20,9 @@ export const routes: Routes = [
     { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [AuthGuard] },
     { path: 'miperfil', component: MiPerfil , canActivate: [AuthGuard]},
     { path: 'publicar', component: Publicar , canActivate: [AuthGuard]},
-    { path: 'dashboard/usuarios', component: UsuariosDashboard, canActivate: [AdminGuard],},
+    { path: 'dashboard/usuarios', component: UsuariosDashboard, canActivate: [AdminGuard]},
+    { path: 'publicaciones-bajas', component: PublicacionesBajas , canActivate: [AuthGuard]},
+
     { path: '', component: Loading },
     { path: '**', redirectTo: '' }
 ];

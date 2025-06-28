@@ -44,11 +44,11 @@ constructor(private http: HttpClient) {}
   }
   
   listarBajas(offset: number, limit: number) {
-    return this.http.get<any[]>(`/api/publicaciones/bajas?offset=${offset}&limit=${limit}`);
+    return this.http.get<any[]>(`${this.apiUrl}/bajas?offset=${offset}&limit=${limit}`);
   }
 
   rehabilitar(id: string) {
-    return this.http.post(`/api/publicaciones/${id}/rehabilitar`, {});
+    return this.http.post(`${this.apiUrl}/${id}/rehabilitar`, {});
   }
 
 }
