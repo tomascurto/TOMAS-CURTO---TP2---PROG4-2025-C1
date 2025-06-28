@@ -1,0 +1,6 @@
+<h2>Publicaciones dadas de baja</h2>
+<div *ngFor="let p of publicaciones">
+  <app-publicacion [publicacion]="p" [usuarioId]="perfil?.user._id"></app-publicacion>
+  <button (click)="rehabilitar(p._id)">Rehabilitar</button>
+</div>
+<button (click)="cargar()" *ngIf="hayMas && !cargando">Cargar más</button>

@@ -3,8 +3,13 @@
     <button (click)="editarModo = !editarModo">Editar publicación</button>
   </div>
 
-  <button *ngIf="usuarioId === publicacion.autor._id || perfil.user.rol === 'admin'" 
-        (click)="borrarPublicacion()">Borrar publicación</button>
+
+  <div *ngIf="puedeModificar()" class="acciones-publicacion">
+    <button (click)="toggleEstadoPublicacion()">
+      {{ publicacion.activo ? 'Dar de baja' : 'Dar de alta' }}
+    </button>
+  </div>
+
 
   <form *ngIf="editarModo" [formGroup]="formEdicion" (ngSubmit)="guardarEdicion()">
     <input formControlName="titulo" placeholder="Título" />

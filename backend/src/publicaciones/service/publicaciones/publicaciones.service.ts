@@ -7,115 +7,131 @@ import { Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { ConflictException } from '@nestjs/common';
-import { Types } from 'mongoose'; 
+import { Types } from 'mongoose';
 import { UnauthorizedException } from '@nestjs/common';
 
-const usuarioId = new Types.ObjectId("64b5f60d1e3c2c456789abcd");
+const usuarioId = new Types.ObjectId('64b5f60d1e3c2c456789abcd');
 
 @Injectable()
 export class PublicacionesService {
-    constructor(
-        private readonly cloudinaryService: CloudinaryService,
-        @InjectModel(Publicacion.name) private readonly publicacionModel: Model<Publicacion>,
-    ) {}
-    async crearPublicacion(
-        dto: CrearPublicacionDto,
-        usuarioId: string,
-        imagen?: Express.Multer.File,
-    ) {
-        let imagenUrl: string | undefined = undefined;
+  constructor(
+    private readonly cloudinaryService: CloudinaryService,
+    @InjectModel(Publicacion.name)
+    private readonly publicacionModel: Model<Publicacion>,
+  ) {}
+  async crearPublicacion(
+    dto: CrearPublicacionDto,
+    usuarioId: string,
+    imagen?: Express.Multer.File,
+  ) {
+    let imagenUrl: string | undefined = undefined;
 
-        if (imagen) {
-            imagenUrl = await this.cloudinaryService.uploadImage(imagen, 'publicaciones');
-        }
-
-        const autorId = Types.ObjectId.isValid(usuarioId)
-        ? new Types.ObjectId(usuarioId)
-        : null; 
-
-        if (!autorId) {
-            throw new Error('El usuarioId no es un ObjectId válido');
-        }
-
-        const nueva = new this.publicacionModel({
-            ...dto,
-            imagenUrl,
-            autor: autorId,
-        });
-
-        return nueva.save();
+    if (imagen) {
+      imagenUrl = await this.cloudinaryService.uploadImage(
+        imagen,
+        'publicaciones',
+      );
     }
 
-    async bajaLogica(id: string, usuarioId: string, esAdmin: boolean = false) {
-      const publicacion = await this.publicacionModel.findById(id);
-      if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+    const autorId = Types.ObjectId.isValid(usuarioId)
+      ? new Types.ObjectId(usuarioId)
+      : null;
 
-      if (publicacion.autor.toString() !== usuarioId && !esAdmin) {
-        throw new UnauthorizedException('No tienes permisos');
-      }
-
-      publicacion.activo = false;
-      return publicacion.save();
+    if (!autorId) {
+      throw new Error('El usuarioId no es un ObjectId válido');
     }
 
+    const nueva = new this.publicacionModel({
+      ...dto,
+      imagenUrl,
+      autor: autorId,
+    });
 
-    async listarPublicaciones(
-  orden: 'fecha' | 'likes',
-  usuarioId?: string,
-  offset = 0,
-  limit = 10,
-) {
-  const filtro: any = { activo: true };
-  if (usuarioId) filtro.autor = usuarioId;
-
-  if (orden === 'likes') {
-    const pipeline: any[] = [];
-
-    if (usuarioId) {
-      pipeline.push({ $match: filtro });
-    } else {
-      pipeline.push({ $match: { activo: true } });
-    }
-
-    pipeline.push(
-      {
-        $addFields: {
-          likesCount: { $size: '$likes' }
-        }
-      },
-      { $sort: { likesCount: -1 } },
-      { $skip: offset },
-      { $limit: limit },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'autor',
-          foreignField: '_id',
-          as: 'autor'
-        }
-      },
-      {
-        $unwind: {
-          path: '$autor',
-          preserveNullAndEmptyArrays: true
-        }
-      }
-    );
-
-    return this.publicacionModel.aggregate(pipeline);
+    return nueva.save();
   }
 
-  
-  return this.publicacionModel
-    .find(filtro)
-    .sort({ createdAt: -1 })
-    .skip(offset)
-    .limit(limit)
-    .populate('autor', 'firstName lastName username profileImageUrl') 
-    .exec();
-}
+  async bajaLogica(id: string, usuarioId: string, esAdmin: boolean = false) {
+    const publicacion = await this.publicacionModel.findById(id);
+    if (!publicacion) throw new NotFoundException('Publicación no encontrada');
 
-    async darLike(publicacionId: string, usuarioId: string) {
+    if (publicacion.autor.toString() !== usuarioId && !esAdmin) {
+      throw new UnauthorizedException('No tienes permisos');
+    }
+
+    publicacion.activo = false;
+    return publicacion.save();
+  }
+
+  async altaLogica(id: string, usuarioId: string, esAdmin = false) {
+    const publicacion = await this.publicacionModel.findById(id);
+    if (!publicacion) throw new NotFoundException('Publicación no encontrada');
+
+    if (publicacion.autor.toString() !== usuarioId && !esAdmin) {
+      throw new NotFoundException(
+        'No tienes permisos para reactivar esta publicación',
+      );
+    }
+
+    publicacion.activo = true;
+    return publicacion.save();
+  }
+
+  async listarPublicaciones(
+    orden: 'fecha' | 'likes',
+    usuarioId?: string,
+    offset = 0,
+    limit = 10,
+  ) {
+    const filtro: any = { activo: true };
+    if (usuarioId) filtro.autor = usuarioId;
+
+    if (orden === 'likes') {
+      const pipeline: any[] = [];
+
+      if (usuarioId) {
+        pipeline.push({ $match: filtro });
+      } else {
+        pipeline.push({ $match: { activo: true } });
+      }
+
+      pipeline.push(
+        {
+          $addFields: {
+            likesCount: { $size: '$likes' },
+          },
+        },
+        { $sort: { likesCount: -1 } },
+        { $skip: offset },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'autor',
+            foreignField: '_id',
+            as: 'autor',
+          },
+        },
+        {
+          $unwind: {
+            path: '$autor',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+      );
+
+      return this.publicacionModel.aggregate(pipeline);
+    }
+
+    return this.publicacionModel
+      .find(filtro)
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .populate('autor', 'firstName lastName username profileImageUrl')
+      .exec();
+  }
+
+  async darLike(publicacionId: string, usuarioId: string) {
     const publicacion = await this.publicacionModel.findById(publicacionId);
     if (!publicacion) throw new NotFoundException('Publicación no encontrada');
 
@@ -127,9 +143,9 @@ export class PublicacionesService {
 
     publicacion.likes.push(objectId);
     return publicacion.save();
-    }
+  }
 
-    async quitarLike(publicacionId: string, usuarioId: string) {
+  async quitarLike(publicacionId: string, usuarioId: string) {
     const publicacion = await this.publicacionModel.findById(publicacionId);
     if (!publicacion) throw new NotFoundException('Publicación no encontrada');
 
@@ -139,7 +155,7 @@ export class PublicacionesService {
       throw new NotFoundException('No habías dado like a esta publicación');
     }
 
-    publicacion.likes = publicacion.likes.filter(id => !id.equals(objectId));
+    publicacion.likes = publicacion.likes.filter((id) => !id.equals(objectId));
     return publicacion.save();
   }
 
@@ -153,7 +169,11 @@ export class PublicacionesService {
     return pub;
   }
 
-  async editarPublicacion(id: string, dto: CrearPublicacionDto, usuarioId: string) {
+  async editarPublicacion(
+    id: string,
+    dto: CrearPublicacionDto,
+    usuarioId: string,
+  ) {
     const publicacion = await this.publicacionModel.findById(id);
     if (!publicacion) throw new NotFoundException('Publicación no encontrada');
 
@@ -165,4 +185,22 @@ export class PublicacionesService {
 
     return publicacion.save();
   }
+
+  async listarPorEstado(activo: boolean, usuarioId: string, esAdmin = false, offset = 0, limit = 10) {
+  const filtro: any = { activo };
+
+  if (!esAdmin) {
+    filtro.autor = usuarioId;
+  }
+
+
+  
+  return this.publicacionModel
+    .find(filtro)
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit)
+    .populate('autor', 'firstName lastName username profileImageUrl')
+    .exec();
+}
 }

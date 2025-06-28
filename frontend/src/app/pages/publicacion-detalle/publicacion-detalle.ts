@@ -6,24 +6,30 @@ import { ComentariosService } from '../../services/comentarios.service';
 import { Publicacion } from '../../componentes/publicacion/publicacion';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormSubmittedEvent, FormsModule } from '@angular/forms';
-
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormSubmittedEvent,
+  FormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-publicacion-detalle',
   standalone: true,
   imports: [CommonModule, Publicacion, ReactiveFormsModule, FormsModule],
   templateUrl: './publicacion-detalle.html',
-  styleUrls: ['./publicacion-detalle.css'] 
+  styleUrls: ['./publicacion-detalle.css'],
 })
 export class PublicacionDetalle implements OnInit {
   publicacion: any;
   comentarios: any[] = [];
   usuarioId: string | null = null;
   comentarioForm: FormGroup;
-  perfil: any; 
-  editarForm: boolean = false; 
-  formEdicion: FormGroup;  
+  perfil: any;
+  editarForm: boolean = false;
+  formEdicion: FormGroup;
 
   private publicacionId: string = '';
   offset: number = 0;
@@ -39,23 +45,22 @@ export class PublicacionDetalle implements OnInit {
     private authService: AuthService,
     private perfilService: PerfilService,
     private fb: FormBuilder
-    
   ) {
     this.comentarioForm = this.fb.group({
       mensaje: ['', [Validators.required, Validators.maxLength(500)]],
     });
     this.formEdicion = this.fb.group({
       titulo: ['', Validators.required],
-      mensaje: ['', Validators.required],});
+      mensaje: ['', Validators.required],
+    });
   }
 
   ngOnInit() {
-    
     this.perfilService.getMiPerfil().subscribe({
-      next: data => {
+      next: (data) => {
         this.usuarioId = data.user._id;
-        this.perfil = data; 
-      }
+        this.perfil = data;
+      },
     });
 
     this.publicacionId = this.route.snapshot.paramMap.get('id') || '';
@@ -66,7 +71,7 @@ export class PublicacionDetalle implements OnInit {
       },
       error: (err) => {
         console.error('Error al obtener publicación:', err);
-      }
+      },
     });
 
     this.cargarComentarios();
@@ -75,13 +80,14 @@ export class PublicacionDetalle implements OnInit {
   guardarEdicion() {
     if (this.formEdicion.invalid || !this.publicacionId) return;
 
-    this.publicacionesService.editarPublicacion(this.publicacionId, this.formEdicion.value)
+    this.publicacionesService
+      .editarPublicacion(this.publicacionId, this.formEdicion.value)
       .subscribe({
         next: (res: any) => {
           this.publicacion = res.publicacion;
           this.editarModo = false;
         },
-        error: (err: any) => console.error('Error al editar publicación:', err)
+        error: (err: any) => console.error('Error al editar publicación:', err),
       });
   }
 
@@ -89,7 +95,7 @@ export class PublicacionDetalle implements OnInit {
     this.editarForm = true;
     this.formEdicion.patchValue({
       titulo: this.publicacion.titulo,
-      mensaje: this.publicacion.mensaje
+      mensaje: this.publicacion.mensaje,
     });
   }
 
@@ -97,61 +103,87 @@ export class PublicacionDetalle implements OnInit {
     if (!this.publicacionId) return;
 
     this.publicacionesService.bajaLogica(this.publicacionId).subscribe({
-      next: () => {
-      },
-      error: (err: any) => console.error('Error al borrar:', err)
+      next: () => {},
+      error: (err: any) => console.error('Error al borrar:', err),
     });
   }
   cargarComentarios() {
-      if (this.cargando || !this.hayMas) return;
-      this.cargando = true;
+    if (this.cargando || !this.hayMas) return;
+    this.cargando = true;
 
-      this.comentariosService
-        .listarComentarios(this.publicacionId, this.offset, this.limit)
-        .subscribe((res) => {
-          if (res.length < this.limit) this.hayMas = false;
+    this.comentariosService
+      .listarComentarios(this.publicacionId, this.offset, this.limit)
+      .subscribe((res) => {
+        if (res.length < this.limit) this.hayMas = false;
 
-          
-          this.comentarios.push(...res);
-          
-          this.offset += this.limit;
-          this.cargando = false;
-        });
-    }
+        this.comentarios.push(...res);
+
+        this.offset += this.limit;
+        this.cargando = false;
+      });
+  }
 
   enviarComentario() {
     if (this.comentarioForm.invalid || !this.publicacionId) return;
 
     const mensaje = this.comentarioForm.value.mensaje;
 
-    this.comentariosService.crearComentario(this.publicacionId, mensaje).subscribe({
-      next: (nuevoComentario) => {
+    this.comentariosService
+      .crearComentario(this.publicacionId, mensaje)
+      .subscribe({
+        next: (nuevoComentario) => {
+          const comentarioCompleto = {
+            ...nuevoComentario,
+            mensaje: mensaje,
+            autor: {
+              _id: this.usuarioId,
+              username: this.perfil?.user.username || 'Anónimo',
+              profileImageUrl: this.perfil?.user.profileImageUrl || '',
+            },
+          };
 
-        const comentarioCompleto = {
-          ...nuevoComentario,
-          mensaje: mensaje,
-          autor: {
-            _id: this.usuarioId,
-            username: this.perfil?.user.username || 'Anónimo',
-            profileImageUrl: this.perfil?.user.profileImageUrl || ''
-          }
-        };
-
-        this.comentarios.push(comentarioCompleto);
-        this.comentarioForm.reset();
-      },
-      error: err => console.error('Error al enviar comentario:', err)
-    });
+          this.comentarios.push(comentarioCompleto);
+          this.comentarioForm.reset();
+        },
+        error: (err) => console.error('Error al enviar comentario:', err),
+      });
   }
 
   recargarComentarios() {
     if (!this.publicacionId) return;
 
-    this.comentariosService.listarComentarios(this.publicacionId, 0, this.offset + this.limit)
+    this.comentariosService
+      .listarComentarios(this.publicacionId, 0, this.offset + this.limit)
       .subscribe((res) => {
         this.comentarios = res;
       });
   }
 
-  
+  toggleEstadoPublicacion() {
+    if (!this.publicacion) return;
+
+    const esActiva = this.publicacion.activo;
+    const id = this.publicacion._id;
+
+    const accion = esActiva
+      ? this.publicacionesService.bajaLogica(id)
+      : this.publicacionesService.rehabilitar(id);
+
+    accion.subscribe({
+      next: () => {
+        this.publicacion.activo = !esActiva;
+      },
+      error: (err) => {
+        console.error('Error al cambiar estado de publicación:', err);
+      },
+    });
+  }
+
+  puedeModificar(): boolean {
+    if (!this.perfil || !this.publicacion) return false;
+
+    const esAutor = this.perfil.user._id === this.publicacion.autor._id;
+    const esAdmin = this.perfil.user.rol === 'administrador';
+    return esAutor || esAdmin;
+  }
 }

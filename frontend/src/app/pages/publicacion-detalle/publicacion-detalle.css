@@ -75,3 +75,19 @@
   background-color: #aaa;
   cursor: not-allowed;
 }
+
+.acciones-publicacion {
+  margin-top: 1rem;
+}
+
+.acciones-publicacion button {
+  background-color: #55ffa7;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.acciones-publicacion button:hover {
+  background-color: #00ff88;
+}

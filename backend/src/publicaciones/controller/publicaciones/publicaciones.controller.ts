@@ -10,7 +10,7 @@ import {
   Param,
   Query,
   Put,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from '../../../publicaciones/service/publicaciones/publicaciones.service';
@@ -22,9 +22,9 @@ import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
 import { Roles } from '../../../auth/roles.decorator';
 
 interface RequestConUsuario extends Request {
-  user?: { 
+  user?: {
     userId: string;
-    rol?: string; 
+    rol?: string;
   };
 }
 
@@ -35,11 +35,14 @@ export class PublicacionesController {
     private readonly publicacionesService: PublicacionesService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-  
+
   @Post('subir-imagen')
   @UseInterceptors(FileInterceptor('imagen'))
   async subirImagen(@UploadedFile() file: Express.Multer.File) {
-    const result = await this.cloudinaryService.uploadImage(file, 'publicaciones');
+    const result = await this.cloudinaryService.uploadImage(
+      file,
+      'publicaciones',
+    );
     return { url: result };
   }
 
@@ -52,16 +55,28 @@ export class PublicacionesController {
   ) {
     console.log('Usuario en request:', req.user);
     const usuarioId = req.user!.userId;
-    const publicacion = await this.publicacionesService.crearPublicacion(dto, usuarioId, file);
+    const publicacion = await this.publicacionesService.crearPublicacion(
+      dto,
+      usuarioId,
+      file,
+    );
     return { message: 'Publicación creada', publicacion };
   }
 
   @Delete(':id')
   async bajaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    const esAdmin = req.user?.rol === UserRole.ADMIN; 
+    const esAdmin = req.user?.rol === UserRole.ADMIN;
     await this.publicacionesService.bajaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación dada de baja lógicamente' };
+  }
+
+  @Post(':id/rehabilitar')
+  async altaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
+    const usuarioId = req.user!.userId;
+    const esAdmin = req.user!.rol === 'ADMIN';
+    await this.publicacionesService.altaLogica(id, usuarioId, esAdmin);
+    return { message: 'Publicación reactivada correctamente' };
   }
 
   @Get()
@@ -80,7 +95,7 @@ export class PublicacionesController {
     return publicaciones;
   }
 
-  @Post(':id/like') 
+  @Post(':id/like')
   async like(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
     const publicacion = await this.publicacionesService.darLike(id, usuarioId);
@@ -90,7 +105,10 @@ export class PublicacionesController {
   @Delete(':id/like')
   async unlike(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    const publicacion = await this.publicacionesService.quitarLike(id, usuarioId);
+    const publicacion = await this.publicacionesService.quitarLike(
+      id,
+      usuarioId,
+    );
     return { message: 'Like removido', publicacion };
   }
 
@@ -107,8 +125,29 @@ export class PublicacionesController {
     @Req() req: RequestConUsuario,
   ) {
     const usuarioId = req.user!.userId;
-    const actualizada = await this.publicacionesService.editarPublicacion(id, dto, usuarioId);
+    const actualizada = await this.publicacionesService.editarPublicacion(
+      id,
+      dto,
+      usuarioId,
+    );
     return { message: 'Publicación actualizada', publicacion: actualizada };
   }
 
+  @Get('bajas')
+  async listarBajas(
+    @Req() req: RequestConUsuario,
+    @Query('offset') offset = '0',
+    @Query('limit') limit = '10',
+  ) {
+    const usuarioId = req.user!.userId;
+    const esAdmin = req.user!.rol === 'ADMIN';
+    const bajas = await this.publicacionesService.listarPorEstado(
+      false,
+      usuarioId,
+      esAdmin,
+      +offset,
+      +limit,
+    );
+    return bajas;
+  }
 }

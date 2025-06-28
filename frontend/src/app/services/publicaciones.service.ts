@@ -42,6 +42,13 @@ constructor(private http: HttpClient) {}
   editarPublicacion(id: string, datos: { titulo: string; mensaje: string }) {
     return this.http.put(`${this.apiUrl}/${id}`, datos);
   }
+  
+  listarBajas(offset: number, limit: number) {
+    return this.http.get<any[]>(`/api/publicaciones/bajas?offset=${offset}&limit=${limit}`);
+  }
 
+  rehabilitar(id: string) {
+    return this.http.post(`/api/publicaciones/${id}/rehabilitar`, {});
+  }
 
 }
