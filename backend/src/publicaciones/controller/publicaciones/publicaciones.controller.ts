@@ -136,6 +136,8 @@ export class PublicacionesController {
     @Query('limit') limit = '10',
   ) {
     
+  console.log('req.user:', req.user); 
+    
   const esAdmin = req.user!.role === 'ADMIN';
   const usuarioId = esAdmin ? null : req.user!.userId;
     const bajas = await this.publicacionesService.listarPorEstado(
@@ -154,6 +156,8 @@ export class PublicacionesController {
     @Query('limit') limit: number = 10,
     @Req() req: RequestConUsuario
   ) {
+    
+  console.log('req.user:', req.user); 
     const usuario = req.user as any;
     return this.publicacionesService.listarPorEstado(
       false,
