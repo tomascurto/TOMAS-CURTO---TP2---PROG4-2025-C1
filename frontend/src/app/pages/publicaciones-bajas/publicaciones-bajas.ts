@@ -6,6 +6,10 @@ import { Publicacion } from '../../componentes/publicacion/publicacion';
 import { Publicaciones } from '../publicaciones/publicaciones';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { filter } from 'rxjs';
+import { NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-publicaciones-bajas',
@@ -19,25 +23,59 @@ export class PublicacionesBajas implements OnInit {
   offset = 0; limit = 10;
   cargando = false;
   hayMas = true;
+  username: string | null = null;
+  avatar: string | undefined = undefined;
+  role: string = "";
 
-  constructor(private pubService: PublicacionesService, private perfilService: PerfilService) {}
+  constructor(private pubService: PublicacionesService,  private authService: AuthService, private router: Router, private perfilService: PerfilService) {}
 
   ngOnInit() {
     this.cargar();
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+          this.perfilService.getMiPerfil().subscribe({
+            next: (perfil) => {
+              this.username = perfil.user.username;
+              this.avatar = perfil.user.profileImageUrl;
+              this.role = perfil.user.role;
+            },
+            error: () => {
+              this.username = null;
+              this.avatar = undefined;
+              this.role = "";
+            }
+          });
+      });
   }
 
   cargar() {
-    if (this.cargando || !this.hayMas) return;
-    this.cargando = true;
+  if (this.cargando || !this.hayMas) return;
+  this.cargando = true;
 
-    this.pubService.listarBajas(this.offset, this.limit).subscribe({
-      next: (res: any[]) => {
-        this.publicaciones.push(...res);
-        this.offset += this.limit;
-        if (res.length < this.limit) this.hayMas = false;
-        this.cargando = false;
-      }
-    });
+  const fetch$ = this.isAdmin()
+    ? this.pubService.listarBajas(this.offset, this.limit)
+    : this.pubService.listarBajasPropias(this.offset, this.limit);
+
+  fetch$.subscribe({
+    next: (res: any[]) => {
+      this.publicaciones.push(...res);
+      this.offset += this.limit;
+      if (res.length < this.limit) this.hayMas = false;
+      this.cargando = false;
+    },
+    error: () => {
+      this.cargando = false;
+    }
+  });
+}
+  
+
+   isAdmin(): boolean {
+    if (this.role=="administrador"){
+      return true
+    }
+    else {return false}
   }
 
   rehabilitar(id: string) {

@@ -150,4 +150,20 @@ export class PublicacionesController {
     );
     return bajas;
   }
+
+    @Get('bajas/mias')
+    async obtenerMisPublicacionesBajas(
+    @Query('offset') offset: number = 0,
+    @Query('limit') limit: number = 10,
+    @Req() req: RequestConUsuario
+  ) {
+    const usuario = req.user as any;
+    return this.publicacionesService.listarPorEstado(
+      false,
+      usuario.id,
+      false, 
+      offset,
+      limit
+    );
+  }
 }

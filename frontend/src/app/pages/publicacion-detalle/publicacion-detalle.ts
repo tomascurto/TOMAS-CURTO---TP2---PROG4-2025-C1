@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NavigationEnd } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs';
 import { PublicacionesService } from '../../services/publicaciones.service';
 import { ComentariosService } from '../../services/comentarios.service';
 import { Publicacion } from '../../componentes/publicacion/publicacion';
@@ -30,6 +33,9 @@ export class PublicacionDetalle implements OnInit {
   perfil: any;
   editarForm: boolean = false;
   formEdicion: FormGroup;
+  username: string | null = null;
+  avatar: string | undefined = undefined;
+  role: string = "";
 
   private publicacionId: string = '';
   offset: number = 0;
@@ -43,8 +49,9 @@ export class PublicacionDetalle implements OnInit {
     private publicacionesService: PublicacionesService,
     private comentariosService: ComentariosService,
     private authService: AuthService,
+    private router: Router,
     private perfilService: PerfilService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.comentarioForm = this.fb.group({
       mensaje: ['', [Validators.required, Validators.maxLength(500)]],
@@ -62,6 +69,22 @@ export class PublicacionDetalle implements OnInit {
         this.perfil = data;
       },
     });
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+          this.perfilService.getMiPerfil().subscribe({
+            next: (perfil) => {
+              this.username = perfil.user.username;
+              this.avatar = perfil.user.profileImageUrl;
+              this.role = perfil.user.role;
+            },
+            error: () => {
+              this.username = null;
+              this.avatar = undefined;
+              this.role = "";
+            }
+          });
+      });
 
     this.publicacionId = this.route.snapshot.paramMap.get('id') || '';
 
@@ -75,6 +98,13 @@ export class PublicacionDetalle implements OnInit {
     });
 
     this.cargarComentarios();
+  }
+
+  isAdmin(): boolean {
+    if (this.role=="administrador"){
+      return true
+    }
+    else {return false}
   }
 
   guardarEdicion() {
@@ -183,7 +213,7 @@ export class PublicacionDetalle implements OnInit {
     if (!this.perfil || !this.publicacion) return false;
 
     const esAutor = this.perfil.user._id === this.publicacion.autor._id;
-    const esAdmin = this.perfil.user.rol === 'administrador';
+    const esAdmin = this.isAdmin();
     return esAutor || esAdmin;
   }
 }
