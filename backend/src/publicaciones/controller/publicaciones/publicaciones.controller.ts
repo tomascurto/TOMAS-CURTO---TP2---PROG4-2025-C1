@@ -15,7 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from '../../../publicaciones/service/publicaciones/publicaciones.service';
 import { CrearPublicacionDto } from '../../../publicaciones/dto/crear-publicacion.dto/crear-publicacion.dto';
-
+import { UserPayload } from 'src/auth/interfaces/user-payload.interface';
 import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 import { UserRole } from '../../../users/schemas/user.schema';
 import { CloudinaryService } from '../../../cloudinary/cloudinary.service';
@@ -24,7 +24,8 @@ import { Roles } from '../../../auth/roles.decorator';
 interface RequestConUsuario extends Request {
   user?: {
     userId: string;
-    rol?: string;
+    role?: string;
+    username: string
   };
 }
 
@@ -66,7 +67,7 @@ export class PublicacionesController {
   @Delete(':id')
   async bajaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    const esAdmin = req.user?.rol === UserRole.ADMIN;
+    const esAdmin = req.user?.role === UserRole.ADMIN;
     await this.publicacionesService.bajaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación dada de baja lógicamente' };
   }
@@ -74,7 +75,7 @@ export class PublicacionesController {
   @Post(':id/rehabilitar')
   async altaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
-    const esAdmin = req.user!.rol === 'ADMIN';
+    const esAdmin = req.user!.role === 'ADMIN';
     await this.publicacionesService.altaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación reactivada correctamente' };
   }
@@ -140,13 +141,13 @@ export class PublicacionesController {
     @Query('limit') limit = '10',
   ) {
     const usuarioId = req.user!.userId;
-    const esAdmin = req.user!.rol === 'ADMIN';
+    const esAdmin = req.user!.role === 'ADMIN';
     const bajas = await this.publicacionesService.listarPorEstado(
       false,
       usuarioId,
       esAdmin,
-      Number(offset),
-      Number(limit)
+      +offset,
+      +limit,
     );
     return bajas;
   }
