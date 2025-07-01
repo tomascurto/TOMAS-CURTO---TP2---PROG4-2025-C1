@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { ComentariosModule } from './comentarios/comentarios.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ComentariosModule } from './comentarios/comentarios.module';
       isGlobal: true, 
     }),
     PublicacionesModule,
+    EstadisticasModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],
