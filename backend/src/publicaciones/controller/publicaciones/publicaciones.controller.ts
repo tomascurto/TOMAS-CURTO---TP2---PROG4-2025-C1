@@ -54,7 +54,6 @@ export class PublicacionesController {
     @Body() dto: CrearPublicacionDto,
     @Req() req: RequestConUsuario,
   ) {
-    console.log('Usuario en request:', req.user);
     const usuarioId = req.user!.userId;
     const publicacion = await this.publicacionesService.crearPublicacion(
       dto,
@@ -135,7 +134,6 @@ export class PublicacionesController {
     @Query('offset') offset = '0',
     @Query('limit') limit = '10',
   ) {
-    console.log('req.user:', req.user);
 
     const esAdmin = req.user!.role === UserRole.ADMIN;
     const usuarioId = esAdmin ? null : req.user!.userId;
@@ -155,11 +153,7 @@ export class PublicacionesController {
     @Query('limit') limit: number = 10,
     @Req() req: RequestConUsuario,
   ) {
-    console.log('req.user:', req.user);
-    console.log('Offset:', offset);
-    console.log('Limit:', limit);
     const usuario = req.user as any;
-    console.log('Usuario autenticado:', usuario.userId);
     return this.publicacionesService.listarPorEstado(
       false,
       usuario.userId,

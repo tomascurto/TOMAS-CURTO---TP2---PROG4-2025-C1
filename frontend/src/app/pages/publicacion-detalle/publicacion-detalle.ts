@@ -219,8 +219,6 @@ export class PublicacionDetalle implements OnInit {
 
     const esAutor = this.perfil.user._id === this.publicacion.autor._id;
     const esAdmin = this.isAdmin();
-    console.log('puedeModificar:', { esAutor, esAdmin, perfilId: this.perfil.user._id, autorId: this.publicacion.autor._id, role: this.role });
-
     return esAutor || esAdmin;
   }
 }

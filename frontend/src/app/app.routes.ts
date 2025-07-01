@@ -11,7 +11,7 @@ import { Loading } from './loading/loading';
 import { AdminGuard } from './guards/admin.guard';
 import { UsuariosDashboard } from './pages/dashboard/usuarios-dashboard/usuarios-dashboard';
 import { PublicacionesBajas } from './pages/publicaciones-bajas/publicaciones-bajas';
-
+import { DashboardEstadisticas } from './pages/dashboard-estadisticas/dashboard-estadisticas';
 
 export const routes: Routes = [
     { path: 'registro', component: Registro , canActivate: [NoAuthGuard] },
@@ -22,6 +22,7 @@ export const routes: Routes = [
     { path: 'publicar', component: Publicar , canActivate: [AuthGuard]},
     { path: 'dashboard/usuarios', component: UsuariosDashboard, canActivate: [AdminGuard]},
     { path: 'publicaciones-bajas', component: PublicacionesBajas , canActivate: [AuthGuard]},
+    { path: 'dashboard-estadisticas', component: DashboardEstadisticas, canActivate: [AdminGuard]},
 
     { path: '', component: Loading },
     { path: '**', redirectTo: '' }

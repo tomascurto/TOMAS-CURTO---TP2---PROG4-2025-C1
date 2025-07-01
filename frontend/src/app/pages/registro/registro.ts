@@ -29,7 +29,6 @@ export class Registro {
     private authService: AuthService,
     private router: Router
   ) {
-    console.log('Login component loaded');
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],

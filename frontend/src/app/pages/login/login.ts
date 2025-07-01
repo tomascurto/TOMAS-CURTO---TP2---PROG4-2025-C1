@@ -40,8 +40,7 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        console.log('ROL DEL USUARIO:', res.user.role);
+        localStorage.setItem('user', JSON.stringify(res.user));;
         this.sessionService.startSessionTimer();
         this.router.navigate(['/publicaciones']);
       },
