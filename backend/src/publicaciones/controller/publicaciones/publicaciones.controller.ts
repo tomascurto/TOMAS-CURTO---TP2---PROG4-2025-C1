@@ -143,7 +143,6 @@ export class PublicacionesController {
   const usuarioId = esAdmin ? null : req.user!.userId;
     const bajas = await this.publicacionesService.listarPorEstado(
       false,
-      usuarioId,
       esAdmin,
       +offset,
       +limit,
@@ -165,7 +164,6 @@ export class PublicacionesController {
   console.log('Usuario autenticado:', usuario.userId);
     return this.publicacionesService.listarPorEstado(
       false,
-      usuario.userId,
       false, 
       offset,
       limit
