@@ -43,16 +43,16 @@ constructor(private http: HttpClient) {}
     return this.http.put(`${this.apiUrl}/${id}`, datos);
   }
   
+    listarBajasPropias(offset = 0, limit = 10) {
+      return this.http.get<any[]>(`${this.apiUrl}/bajas/mias?offset=${offset}&limit=${limit}`);
+    }
+  
   listarBajas(offset: number, limit: number) {
     return this.http.get<any[]>(`${this.apiUrl}/bajas?offset=${offset}&limit=${limit}`);
   }
 
   rehabilitar(id: string) {
     return this.http.post(`${this.apiUrl}/${id}/rehabilitar`, {});
-  }
-
-  listarBajasPropias(offset = 0, limit = 10) {
-    return this.http.get<any[]>(`${this.apiUrl}/bajas/mias?offset=${offset}&limit=${limit}`);
   }
 
 

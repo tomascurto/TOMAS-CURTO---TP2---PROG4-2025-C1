@@ -44,7 +44,7 @@ export class PublicacionesBajas implements OnInit {
         this.avatar = perfil.user.profileImageUrl;
         this.role = perfil.user.role;
         this.usuarioId = perfil.user._id;
-
+        console.log(this.usuarioId)
         this.cargar();
       },
       error: () => {
@@ -69,6 +69,7 @@ export class PublicacionesBajas implements OnInit {
 
     fetch$.subscribe({
       next: (res: any[]) => {
+        console.log('Datos recibidos:', res);
         this.publicaciones.push(...res);
         this.offset += this.limit;
         if (res.length < this.limit) this.hayMas = false;

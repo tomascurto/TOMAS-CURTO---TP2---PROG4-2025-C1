@@ -158,8 +158,11 @@ export class PublicacionesController {
     @Req() req: RequestConUsuario
   ) {
     
-  console.log('req.user:', req.user); 
-    const usuario = req.user as any;
+  console.log('req.user:', req.user);
+  console.log('Offset:', offset);
+  console.log('Limit:', limit);
+  const usuario = req.user as any;
+  console.log('Usuario autenticado:', usuario.userId);
     return this.publicacionesService.listarPorEstado(
       false,
       usuario.userId,
