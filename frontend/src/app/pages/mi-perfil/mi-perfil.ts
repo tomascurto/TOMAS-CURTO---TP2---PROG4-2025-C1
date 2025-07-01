@@ -5,12 +5,13 @@ import { PerfilResponse } from '../../models/perfil-response.model';
 import { Publicacion } from '../../componentes/publicacion/publicacion'; 
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule, Publicacion], 
+  imports: [CommonModule, Publicacion, RouterLink], 
   templateUrl: './mi-perfil.html',
   styleUrls: ['./mi-perfil.css']
 })

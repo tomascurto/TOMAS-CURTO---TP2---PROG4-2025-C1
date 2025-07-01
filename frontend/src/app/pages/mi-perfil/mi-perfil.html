@@ -12,6 +12,7 @@
           <h2>{{ perfil.user.firstName }} {{ perfil.user.lastName }}</h2>
           <p class="username">{{ '@' + perfil.user.username }}</p>
           <p *ngIf="perfil.user.bio" class="bio">{{ perfil.user.bio }}</p>
+          <p routerLink="/publicaciones-bajas" routerLinkActive="active" style="cursor: pointer;">publicaciones ocultas</p>
         </div>
     </div>
 
