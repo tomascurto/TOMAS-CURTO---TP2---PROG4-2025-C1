@@ -25,7 +25,7 @@ interface RequestConUsuario extends Request {
   user?: {
     userId: string;
     role?: string;
-    username: string
+    username: string;
   };
 }
 
@@ -76,7 +76,7 @@ export class PublicacionesController {
   async altaLogica(@Param('id') id: string, @Req() req: RequestConUsuario) {
     const usuarioId = req.user!.userId;
     const esAdmin = req.user!.role === UserRole.ADMIN;
-    
+
     await this.publicacionesService.altaLogica(id, usuarioId, esAdmin);
     return { message: 'Publicación reactivada correctamente' };
   }
@@ -114,7 +114,6 @@ export class PublicacionesController {
     return { message: 'Like removido', publicacion };
   }
 
-  
   @Put(':id')
   async editarPublicacion(
     @Param('id') id: string,
@@ -129,44 +128,44 @@ export class PublicacionesController {
     );
     return { message: 'Publicación actualizada', publicacion: actualizada };
   }
-  
+
   @Get('bajas')
   async listarBajas(
     @Req() req: RequestConUsuario,
     @Query('offset') offset = '0',
     @Query('limit') limit = '10',
   ) {
-    
-  console.log('req.user:', req.user); 
-    
-  const esAdmin = req.user!.role === UserRole.ADMIN;
-  const usuarioId = esAdmin ? null : req.user!.userId;
+    console.log('req.user:', req.user);
+
+    const esAdmin = req.user!.role === UserRole.ADMIN;
+    const usuarioId = esAdmin ? null : req.user!.userId;
     const bajas = await this.publicacionesService.listarPorEstado(
       false,
+      usuarioId,
       esAdmin,
       +offset,
       +limit,
     );
     return bajas;
   }
-  
+
   @Get('bajas/mias')
   async obtenerMisPublicacionesBajas(
     @Query('offset') offset: number = 0,
     @Query('limit') limit: number = 10,
-    @Req() req: RequestConUsuario
+    @Req() req: RequestConUsuario,
   ) {
-    
-  console.log('req.user:', req.user);
-  console.log('Offset:', offset);
-  console.log('Limit:', limit);
-  const usuario = req.user as any;
-  console.log('Usuario autenticado:', usuario.userId);
+    console.log('req.user:', req.user);
+    console.log('Offset:', offset);
+    console.log('Limit:', limit);
+    const usuario = req.user as any;
+    console.log('Usuario autenticado:', usuario.userId);
     return this.publicacionesService.listarPorEstado(
       false,
-      false, 
+      usuario.userId,
+      false,
       offset,
-      limit
+      limit,
     );
   }
   @Get(':id')

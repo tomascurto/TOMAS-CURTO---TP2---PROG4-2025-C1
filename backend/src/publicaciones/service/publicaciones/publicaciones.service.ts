@@ -187,13 +187,14 @@ export class PublicacionesService {
   }
 
   async listarPorEstado(
-    activo: boolean,
-    esAdmin = false,
-    offset = 0,
-    limit = 10,
-  ) {
+  activo: boolean,
+  usuarioId: string | null,
+  esAdmin = false,
+  offset = 0,
+  limit = 10,
+) {
     const filtro: any = { activo };
-    if (!esAdmin) filtro.autor = new Types.ObjectId(usuarioId);
+    if (!esAdmin && usuarioId) filtro.autor = new Types.ObjectId(usuarioId);
 
     return this.publicacionModel
       .find(filtro)
